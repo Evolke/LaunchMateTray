@@ -4,6 +4,9 @@
     <Compile Update="AboutLaunchMateTray.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="MenuItemDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="AppWindow.cs">
       <SubType>Form</SubType>
     </Compile>

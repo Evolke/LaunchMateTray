@@ -1,3 +1,4 @@
 .vs/
 LaunchMateTray/bin/
 LaunchMateTray/obj/
+*.user

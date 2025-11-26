@@ -33,7 +33,10 @@
             tableLayoutPanel1 = new TableLayoutPanel();
             tabControl1 = new TabControl();
             appTab = new TabPage();
-            treeView1 = new TreeView();
+            deleteItemBtn = new Button();
+            editMenuItem = new Button();
+            addMenuItem = new Button();
+            menuTreeView = new TreeView();
             tabPage2 = new TabPage();
             tableLayoutPanel1.SuspendLayout();
             tabControl1.SuspendLayout();
@@ -43,7 +46,9 @@
             // okButton
             // 
             okButton.DialogResult = DialogResult.OK;
-            okButton.Location = new Point(709, 415);
+            okButton.FlatStyle = FlatStyle.Flat;
+            okButton.ForeColor = Color.White;
+            okButton.Location = new Point(608, 415);
             okButton.Name = "okButton";
             okButton.Size = new Size(75, 23);
             okButton.TabIndex = 0;
@@ -53,7 +58,9 @@
             // cancelButton
             // 
             cancelButton.DialogResult = DialogResult.Cancel;
-            cancelButton.Location = new Point(628, 415);
+            cancelButton.FlatStyle = FlatStyle.Flat;
+            cancelButton.ForeColor = Color.White;
+            cancelButton.Location = new Point(691, 415);
             cancelButton.Name = "cancelButton";
             cancelButton.Size = new Size(75, 23);
             cancelButton.TabIndex = 0;
@@ -90,31 +97,77 @@
             // 
             // appTab
             // 
-            appTab.Controls.Add(treeView1);
+            appTab.BackColor = Color.Black;
+            appTab.Controls.Add(deleteItemBtn);
+            appTab.Controls.Add(editMenuItem);
+            appTab.Controls.Add(addMenuItem);
+            appTab.Controls.Add(menuTreeView);
+            appTab.ForeColor = Color.White;
             appTab.Location = new Point(4, 24);
             appTab.Name = "appTab";
             appTab.Padding = new Padding(3);
             appTab.Size = new Size(750, 343);
             appTab.TabIndex = 0;
             appTab.Text = "Applications";
-            appTab.UseVisualStyleBackColor = true;
             // 
-            // treeView1
+            // deleteItemBtn
             // 
-            treeView1.Location = new Point(6, 6);
-            treeView1.Name = "treeView1";
-            treeView1.Size = new Size(678, 331);
-            treeView1.TabIndex = 0;
+            deleteItemBtn.Enabled = false;
+            deleteItemBtn.FlatStyle = FlatStyle.Flat;
+            deleteItemBtn.Location = new Point(690, 64);
+            deleteItemBtn.Name = "deleteItemBtn";
+            deleteItemBtn.Size = new Size(54, 23);
+            deleteItemBtn.TabIndex = 1;
+            deleteItemBtn.Text = "Delete";
+            deleteItemBtn.UseVisualStyleBackColor = true;
+            deleteItemBtn.Click += deleteItemBtn_Click;
+            // 
+            // editMenuItem
+            // 
+            editMenuItem.Enabled = false;
+            editMenuItem.FlatStyle = FlatStyle.Flat;
+            editMenuItem.Location = new Point(690, 35);
+            editMenuItem.Name = "editMenuItem";
+            editMenuItem.Size = new Size(54, 23);
+            editMenuItem.TabIndex = 1;
+            editMenuItem.Text = "Edit";
+            editMenuItem.UseVisualStyleBackColor = true;
+            editMenuItem.Click += editMenuItem_Click;
+            // 
+            // addMenuItem
+            // 
+            addMenuItem.FlatStyle = FlatStyle.Flat;
+            addMenuItem.Location = new Point(690, 6);
+            addMenuItem.Name = "addMenuItem";
+            addMenuItem.Size = new Size(54, 23);
+            addMenuItem.TabIndex = 1;
+            addMenuItem.Text = "Add";
+            addMenuItem.UseVisualStyleBackColor = false;
+            addMenuItem.Click += addMenuItem_Click;
+            // 
+            // menuTreeView
+            // 
+            menuTreeView.AllowDrop = true;
+            menuTreeView.BackColor = Color.Black;
+            menuTreeView.BorderStyle = BorderStyle.FixedSingle;
+            menuTreeView.ForeColor = Color.White;
+            menuTreeView.Location = new Point(6, 6);
+            menuTreeView.Name = "menuTreeView";
+            menuTreeView.ShowNodeToolTips = true;
+            menuTreeView.Size = new Size(678, 330);
+            menuTreeView.TabIndex = 0;
+            menuTreeView.AfterSelect += menuTreeView_AfterSelect;
             // 
             // tabPage2
             // 
+            tabPage2.BackColor = Color.Black;
+            tabPage2.ForeColor = Color.White;
             tabPage2.Location = new Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
             tabPage2.Size = new Size(750, 343);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Appearance";
-            tabPage2.UseVisualStyleBackColor = true;
             // 
             // SettingsDlg
             // 
@@ -122,17 +175,22 @@
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            AutoSize = true;
-            AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            BackColor = Color.Black;
             CancelButton = cancelButton;
             ClientSize = new Size(800, 450);
             Controls.Add(cancelButton);
             Controls.Add(okButton);
             Controls.Add(tableLayoutPanel1);
+            ForeColor = Color.White;
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            MdiChildrenMinimizedAnchorBottom = false;
             MinimizeBox = false;
             Name = "SettingsDlg";
-            SizeGripStyle = SizeGripStyle.Show;
-            Text = "SettingsDlg";
+            ShowIcon = false;
+            ShowInTaskbar = false;
+            SizeGripStyle = SizeGripStyle.Hide;
+            Text = "Settings";
             tableLayoutPanel1.ResumeLayout(false);
             tabControl1.ResumeLayout(false);
             appTab.ResumeLayout(false);
@@ -147,6 +205,9 @@
         private TabControl tabControl1;
         private TabPage appTab;
         private TabPage tabPage2;
-        private TreeView treeView1;
+        private TreeView menuTreeView;
+        private Button editMenuItem;
+        private Button addMenuItem;
+        private Button deleteItemBtn;
     }
 }
