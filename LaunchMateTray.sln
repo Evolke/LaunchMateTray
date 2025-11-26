@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35828.75 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaunchMateTray", "LaunchMateTray\LaunchMateTray.csproj", "{DA0D8462-64B2-4A7C-BF3F-9B2AAD4433DA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA0D8462-64B2-4A7C-BF3F-9B2AAD4433DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA0D8462-64B2-4A7C-BF3F-9B2AAD4433DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA0D8462-64B2-4A7C-BF3F-9B2AAD4433DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA0D8462-64B2-4A7C-BF3F-9B2AAD4433DA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {43E10372-F6AA-4501-8965-43CA3F25D24B}
+	EndGlobalSection
+EndGlobal
