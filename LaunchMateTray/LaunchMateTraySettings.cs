@@ -6,17 +6,31 @@ using System.Text.Json;
 
 namespace LaunchMateTray
 {
+    public class ColorSettings: SortedList<String,String>
+    {
+
+    }
+
+    public class KeySettings: SortedList<String,int>
+    {
+
+    }
+
     public class JsonAppItem
     {
         public String? Type { get; set; }
         public String? Name { get; set; }
         public String? Path { get; set; }
+        public String? Arguments {  get; set; }
         public List<JsonAppItem>? Children { get; set; }
     }
 
     public class JsonSettings
     {
-        public List<JsonAppItem>? Apps { get; set; }
+        public ColorSettings Appearance { get; set; } = new ColorSettings();
+        public KeySettings Keys { get; set; } = new KeySettings();
+        public List<JsonAppItem>? Apps { get; set; } = new List<JsonAppItem>();
+
     }
 
 
@@ -28,54 +42,69 @@ namespace LaunchMateTray
         private String path = "";
         private String jsonSettings = "";
         public JsonSettings Settings = new JsonSettings();
+        public static ColorSettings defaultColors = new ColorSettings
+        {
+            { "backclr", "FF000000" },
+            { "selectclr", "FF2F4F4F" },
+            { "textclr", "FFFFFFFF" },
+            { "seltextclr", "FFFFFFFF" }
+        };
+        public static KeySettings defaultKeys = new KeySettings
+        {
+            { "ctrl", 0 }, { "shift", 1 }
+        };
 
         public LaunchMateTraySettings()
         {
-            this.initSettings();
+            InitSettings();
         }
 
-        public void initSettings()
+        public void InitSettings()
         {
-            this.path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            this.path += COMPANY_PATH;
-            DirectoryInfo di = new DirectoryInfo(this.path);
+            Settings.Appearance = defaultColors;
+            Settings.Keys = defaultKeys;
+
+            path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            path += COMPANY_PATH;
+            DirectoryInfo di = new DirectoryInfo(path);
             if (!di.Exists)
             {
                 di.Create();
             }
 
-            this.path += APP_PATH;
-            di = new DirectoryInfo(this.path);
+            path += APP_PATH;
+            di = new DirectoryInfo(path);
             if (!di.Exists)
             {
                 di.Create();
             }
 
-            this.path += SETTINGS_FILE;
+            path += SETTINGS_FILE;
 
-            if (!File.Exists(this.path))
+            if (!File.Exists(path))
             {
-                File.Create(this.path);
+                WriteSettings();
             }
+
         }
 
         public void ReadSettings()
         {
-            String jsonString = File.ReadAllText(this.path);
-            Debug.WriteLine(jsonString);
+            String jsonString = File.ReadAllText(path);
+            //Debug.WriteLine(jsonString);
             if (jsonString != null)
             {
                 var data = JsonSerializer.Deserialize<JsonSettings>(jsonString);
-                if (data != null) { this.Settings = data; }
+                if (data != null) { Settings = data; }
             }
         }
 
         public void WriteSettings()
         {
             var options = new JsonSerializerOptions { WriteIndented = true };
-            this.jsonSettings = JsonSerializer.Serialize<JsonSettings>(this.Settings, options);
-            Debug.WriteLine(this.jsonSettings);
-            File.WriteAllText(this.path, this.jsonSettings);
+            jsonSettings = JsonSerializer.Serialize<JsonSettings>(Settings, options);
+            //Debug.WriteLine(jsonSettings);
+            File.WriteAllText(path, jsonSettings);
         }
     }
 }

@@ -121,6 +121,7 @@
             // textBoxDescription
             // 
             textBoxDescription.BackColor = Color.Black;
+            textBoxDescription.BorderStyle = BorderStyle.None;
             textBoxDescription.Dock = DockStyle.Fill;
             textBoxDescription.ForeColor = Color.White;
             textBoxDescription.Location = new Point(147, 123);
@@ -128,7 +129,6 @@
             textBoxDescription.Multiline = true;
             textBoxDescription.Name = "textBoxDescription";
             textBoxDescription.ReadOnly = true;
-            textBoxDescription.ScrollBars = ScrollBars.Both;
             textBoxDescription.Size = new Size(336, 147);
             textBoxDescription.TabIndex = 23;
             textBoxDescription.TabStop = false;

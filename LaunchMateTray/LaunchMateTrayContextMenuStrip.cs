@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,53 +11,98 @@ namespace LaunchMateTray
 {
     public class LMTColorTable : ProfessionalColorTable
     {
-        public LMTColorTable()
+        protected ColorSettings? colors;
+
+        public LMTColorTable(ColorSettings inputClrs)
         {
-            this.UseSystemColors = false;
+            colors = inputClrs;
+            UseSystemColors = false;
         }
+
+        public void SetColorSettings(ColorSettings inputClrs)
+        {
+            colors = inputClrs;
+        }
+
         public override Color MenuBorder
         {
-            get { return Color.Black; }
+            
+            get {
+                int clr = Int32.Parse(colors != null ? colors["backclr"] : LaunchMateTraySettings.defaultColors["backclr"], NumberStyles.AllowHexSpecifier);
+                return Color.FromArgb(clr); 
+            }
         }
         public override Color MenuItemBorder
         {
-            get { return Color.Black; }
+            get {
+                int clr = Int32.Parse(colors != null ? colors["backclr"] : LaunchMateTraySettings.defaultColors["backclr"], NumberStyles.AllowHexSpecifier);
+                return Color.FromArgb(clr);
+            }
         }
         public override Color MenuItemSelected
         {
-            get { return Color.DarkGray; }
+            get {
+                int clr = Int32.Parse(colors != null ? colors["selectclr"] : LaunchMateTraySettings.defaultColors["selectclr"], NumberStyles.AllowHexSpecifier);
+                return Color.FromArgb(clr);
+            }
         }
         public override Color ToolStripDropDownBackground
         {
-            get { return Color.Black; }
+            get {
+                int clr = Int32.Parse(colors != null ? colors["backclr"] : LaunchMateTraySettings.defaultColors["backclr"], NumberStyles.AllowHexSpecifier);
+                return Color.FromArgb(clr);
+            }
         }
 
         public override Color ImageMarginGradientBegin
         {
-            get { return Color.Black; }
+            get
+            {
+                int clr = Int32.Parse(colors != null ? colors["backclr"] : LaunchMateTraySettings.defaultColors["backclr"], NumberStyles.AllowHexSpecifier);
+                return Color.FromArgb(clr);
+            }
         }
         public override Color ImageMarginGradientMiddle
         {
-            get { return Color.Black; }
+            get
+            {
+                int clr = Int32.Parse(colors != null ? colors["backclr"] : LaunchMateTraySettings.defaultColors["backclr"], NumberStyles.AllowHexSpecifier);
+                return Color.FromArgb(clr);
+            }
         }
         public override Color ImageMarginGradientEnd
         {
-            get { return Color.Black; }
+            get
+            {
+                int clr = Int32.Parse(colors != null ? colors["backclr"] : LaunchMateTraySettings.defaultColors["backclr"], NumberStyles.AllowHexSpecifier);
+                return Color.FromArgb(clr);
+            }
         }
     }
     public class LMTContextMenuRenderer: ToolStripProfessionalRenderer
     {
-        public LMTContextMenuRenderer() : base(new LMTColorTable())
-        { 
+        protected ColorSettings? colors;
+
+        public LMTContextMenuRenderer(ColorSettings inputClrs) : base(new LMTColorTable(inputClrs))
+        {
+            colors = inputClrs;
+        }
+
+        public void SetColorSettings(ColorSettings inputClrs)
+        {
+            colors = inputClrs;
+            ((LMTColorTable)ColorTable).SetColorSettings(inputClrs);
         }
 
         protected override void OnRenderMenuItemBackground(System.Windows.Forms.ToolStripItemRenderEventArgs e)
         {
             if (e.Item.Selected)
             {
+                int clr = Int32.Parse(colors != null ? colors["selectclr"] : LaunchMateTraySettings.defaultColors["selectclr"], NumberStyles.AllowHexSpecifier);
+                Color selClr = Color.FromArgb(clr); 
                 Rectangle rectangle = new Rectangle(0, 0, e.Item.Size.Width - 1, e.Item.Size.Height - 1);
-                e.Graphics.FillRectangle(Brushes.DarkSlateGray, rectangle);
-                e.Graphics.DrawRectangle(Pens.DarkSlateGray, rectangle);
+                e.Graphics.FillRectangle(new SolidBrush(selClr), rectangle);
+                e.Graphics.DrawRectangle(new Pen(selClr), rectangle);
             }
             else
             {
@@ -65,16 +111,24 @@ namespace LaunchMateTray
         }
         protected override void OnRenderItemText(System.Windows.Forms.ToolStripItemTextRenderEventArgs e)
         {
-            e.Item.ForeColor = Color.White;
+            String clrKey = "textclr";
+            if (e.Item != null && e.Item.Selected) { clrKey = "seltextclr"; }
+            int clr = Int32.Parse(colors != null ? colors[clrKey] : LaunchMateTraySettings.defaultColors[clrKey], NumberStyles.AllowHexSpecifier);
+            Color txtClr = Color.FromArgb(clr);
+            e.Item.ForeColor = txtClr;
             base.OnRenderItemText(e);
         }
+
         protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
         {
+            String clrKey = e.Item.Selected ? "seltextclr" : "textclr";
+            int clr = Int32.Parse(colors != null ? colors[clrKey] : LaunchMateTraySettings.defaultColors[clrKey], NumberStyles.AllowHexSpecifier);
+            Color txtClr = Color.FromArgb(clr);
+
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             var r = new Rectangle(e.ArrowRectangle.Location, e.ArrowRectangle.Size);
             r.Inflate(-2, -6);
-            //var penClr = e.Item != null && e.Item.Selected ? Pens.Black : Pens.White;
-            e.Graphics.DrawLines(Pens.White, new Point[]{
+            e.Graphics.DrawLines(new Pen(txtClr), new Point[]{
             new Point(r.Left, r.Top),
             new Point(r.Right, r.Top + r.Height /2),
             new Point(r.Left, r.Top+ r.Height)});
@@ -84,9 +138,14 @@ namespace LaunchMateTray
 
     public class LaunchMateTrayContextMenuStrip: ContextMenuStrip
     {
-        public LaunchMateTrayContextMenuStrip()
+        public LaunchMateTrayContextMenuStrip(ColorSettings inputClrs)
         {
-            this.Renderer = new LMTContextMenuRenderer();
+            Renderer = new LMTContextMenuRenderer(inputClrs);
+        }
+
+        public void SetColorSettings(ColorSettings inputClrs)
+        {
+            ((LMTContextMenuRenderer)Renderer).SetColorSettings(inputClrs);
         }
     }
 }

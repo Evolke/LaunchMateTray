@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,6 +15,7 @@ namespace LaunchMateTray
         public menuItemType itemType;
         public string itemName;
         public string itemPath;
+        public string itemArgs;
         public uint order;
     };
 
@@ -23,58 +25,71 @@ namespace LaunchMateTray
      * MenuListItem
      * 
      * ***********************************/
-    class MenuListItem
+    public class MenuListItem: ICloneable
     {
         protected MenuItemInfo info = new MenuItemInfo();
         protected List<MenuListItem>? children;
         protected MenuListItem? parent;
 
         public MenuListItem() {
-            this.Init();
+            Init();
         }
         public MenuListItem(MenuItemInfo itemInfo)
         {
-            this.info = itemInfo;
-            this.Init();
+            info = itemInfo;
+            Init();
         }
 
         public MenuListItem(JsonAppItem appItem)
         {
-            this.Init();
+            Init();
 
-            this.info.itemName = appItem.Name != null ? appItem.Name : "";
+            info.itemName = appItem.Name != null ? appItem.Name : "";
 
             switch (appItem.Type)
             {
                 case "Group":
-                    this.info.itemType = menuItemType.Group;
+                    info.itemType = menuItemType.Group;
                     if (appItem.Children != null)
                     {
                         foreach (var child in appItem.Children)
                         {
-                            this.AddChild(new MenuListItem(child));
+                            AddChild(new MenuListItem(child));
                         }
                         
                     }
                     break;
 
                 case "Application":
-                    this.info.itemType=menuItemType.Application;
-                    this.info.itemPath = appItem.Path != null ? appItem.Path : "";
+                    info.itemType=menuItemType.Application;
+                    info.itemPath = appItem.Path ?? "";
+                    info.itemArgs = appItem.Arguments ?? "";
                     break;
             }
         }
 
         private void Init()
         {
-            this.parent = null;
-            this.children = new List<MenuListItem>();
-            this.GenerateId();
+            parent = null;
+            children = new List<MenuListItem>();
+            GenerateId();
+        }
+
+        public Object Clone()
+        {
+            MenuListItem ret = new MenuListItem(info);
+            if (children != null) {
+                foreach (var child in children)
+                {
+                    ret.AddChild((MenuListItem)child.Clone());
+                }
+            }
+            return ret;
         }
 
         public void GenerateId()
         {
-            this.info.id = Guid.NewGuid().ToString();
+            info.id = Guid.NewGuid().ToString();
         }
 
         public string Id
@@ -125,40 +140,63 @@ namespace LaunchMateTray
             }
         }
 
+        public string Arguments
+        {
+            get
+            {
+                return info.itemArgs;
+            }
+            set
+            {
+                info.itemArgs = value;
+            }
+        }
+
         public void AddChild(MenuListItem child)
         {
-            if (this.children != null) { this.children.Add(child); }
+            if (children != null) { children.Add(child); }
             child.SetParent(this);
         }
 
-        public void SetParent(MenuListItem parent)
+        public void RemoveChild(MenuListItem child)
         {
-            this.parent = parent;
+            children?.Remove(child);
+        }
+
+        public void SetParent(MenuListItem iparent)
+        {
+            parent = iparent;
+        }
+
+        public MenuListItem? GetParent()
+        {
+            return parent;
         }
 
         public List<MenuListItem>? GetChildren()
         {
-            return this.children;
+            return children;
         }
 
         public JsonAppItem Convert2JsonAppItem()
         {
             var ret = new JsonAppItem();
-            switch (this.info.itemType)
+            switch (info.itemType)
             {
                 case menuItemType.Application:
                     ret.Type = "Application";
-                    ret.Name = this.info.itemName;
-                    ret.Path = this.info.itemPath;
+                    ret.Name = info.itemName;
+                    ret.Path = info.itemPath;
+                    ret.Arguments = info.itemArgs;
                     break;
 
                 case menuItemType.Group:
                     ret.Type = "Group";
-                    ret.Name = this.info.itemName;
-                    if (this.children != null)
+                    ret.Name = info.itemName;
+                    if (children != null)
                     {
                         ret.Children = new List<JsonAppItem>();
-                        foreach (MenuListItem child in this.children)
+                        foreach (MenuListItem child in children)
                         {
                             ret.Children.Add(child.Convert2JsonAppItem());
                         }
@@ -167,11 +205,6 @@ namespace LaunchMateTray
             }
             return ret;
         }
-
-        public void Copy(MenuListItem item)
-        {
-
-        }
     }
 
     /*************************************
@@ -179,7 +212,7 @@ namespace LaunchMateTray
      * MenuSortedDictionary
      * 
      * ***********************************/
-    class MenuSortedDictionary : SortedDictionary<String, MenuListItem>
+    public class MenuSortedDictionary : SortedDictionary<String, MenuListItem>
     {
     }
 
@@ -188,16 +221,22 @@ namespace LaunchMateTray
      * MenuList
      * 
      * ***********************************/
-    class MenuList
+    public class MenuList: ICloneable
     {
-        protected MenuListItem rootItem = new MenuListItem();
-        protected MenuSortedDictionary itemMap = new MenuSortedDictionary();
+        protected MenuListItem rootItem;
+        protected MenuSortedDictionary itemMap;
 
-        public MenuListItem Root { get; }
+        public MenuList()
+        {
+            rootItem = new MenuListItem();
+            itemMap = new MenuSortedDictionary();
+        }
+
+        public MenuListItem Root { get { return rootItem; } }
 
         public void AddChildItem(MenuItemInfo itemInfo, string parentId)
         {
-            MenuListItem parent = this.rootItem;
+            MenuListItem parent = rootItem;
 
             if (parentId.Length > 0 && itemMap.ContainsKey(parentId))
             {
@@ -209,7 +248,7 @@ namespace LaunchMateTray
 
         public List<MenuListItem>? GetRootChildren()
         {
-            return this.rootItem.GetChildren();
+            return rootItem.GetChildren();
         }
 
         public void BuildDictionaryItem(MenuListItem item)
@@ -220,28 +259,28 @@ namespace LaunchMateTray
             {
                 foreach (var child in children)
                 {
-                    this.BuildDictionaryItem(child);
+                    BuildDictionaryItem(child);
                 }
             }
         }
 
         public void BuildDictionary()
         {
-            List<MenuListItem>? rootChildren = this.rootItem.GetChildren();
+            List<MenuListItem>? rootChildren = rootItem.GetChildren();
             if (rootChildren != null)
             {
                 foreach (MenuListItem item in rootChildren)
                 {
-                    this.BuildDictionaryItem(item);
+                    BuildDictionaryItem(item);
                 }
             }
         }
 
-        public void UpdateSettings()
+        public void UpdateSettings(bool write=true)
         {
             var settings = new LaunchMateTraySettings();
             settings.ReadSettings();
-            List<MenuListItem>? rootChildren = this.rootItem.GetChildren();
+            List<MenuListItem>? rootChildren = rootItem.GetChildren();
             if (rootChildren != null)
             {
                 var apps = new List<JsonAppItem>();
@@ -251,7 +290,10 @@ namespace LaunchMateTray
                 }
 
                 settings.Settings.Apps = apps;
-                settings.WriteSettings();
+                if (write)
+                {
+                    settings.WriteSettings();
+                }
             }
         }
 
@@ -261,26 +303,38 @@ namespace LaunchMateTray
             {
                 foreach (JsonAppItem item in apps)
                 {
-                    this.rootItem.AddChild(new MenuListItem(item));
+                    rootItem.AddChild(new MenuListItem(item));
                 }
-                this.BuildDictionary();
+                BuildDictionary();
             }
         }
 
         public MenuListItem? FindMenuItem(String Id)
         {
-            if (this.itemMap.ContainsKey(Id))
+            if (itemMap.ContainsKey(Id))
             {
-                return this.itemMap[Id];
+                return itemMap[Id];
             }
 
             return null;
         }
 
-        public void CopyMenuList(MenuList menuList)
+        public Object Clone()
         {
-            this.rootItem = new MenuListItem();
-            this.rootItem.Copy(menuList.Root);
+            var ret = new MenuList();
+            var children = GetRootChildren();
+            if (children != null)
+            {
+                foreach (var child in children)
+                {
+                    ret.Root.AddChild((MenuListItem)child.Clone());
+                }
+
+            }
+
+            ret.BuildDictionary();
+
+            return ret;
         }
     }
 }
