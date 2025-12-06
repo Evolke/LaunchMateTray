@@ -33,6 +33,7 @@
             tableLayoutPanel1 = new TableLayoutPanel();
             tabControl1 = new TabControl();
             appTab = new TabPage();
+            sortBtn = new Button();
             deleteItemBtn = new Button();
             editMenuItem = new Button();
             addMenuItem = new Button();
@@ -114,6 +115,7 @@
             // appTab
             // 
             appTab.BackColor = Color.Black;
+            appTab.Controls.Add(sortBtn);
             appTab.Controls.Add(deleteItemBtn);
             appTab.Controls.Add(editMenuItem);
             appTab.Controls.Add(addMenuItem);
@@ -125,6 +127,17 @@
             appTab.Size = new Size(750, 343);
             appTab.TabIndex = 0;
             appTab.Text = "Applications";
+            // 
+            // sortBtn
+            // 
+            sortBtn.FlatStyle = FlatStyle.Flat;
+            sortBtn.Location = new Point(690, 93);
+            sortBtn.Name = "sortBtn";
+            sortBtn.Size = new Size(54, 23);
+            sortBtn.TabIndex = 2;
+            sortBtn.Text = "Sort";
+            sortBtn.UseVisualStyleBackColor = true;
+            sortBtn.Click += sortBtn_Click;
             // 
             // deleteItemBtn
             // 
@@ -173,7 +186,11 @@
             menuTreeView.ShowNodeToolTips = true;
             menuTreeView.Size = new Size(678, 330);
             menuTreeView.TabIndex = 0;
+            menuTreeView.ItemDrag += menuTreeView_ItemDrag;
             menuTreeView.AfterSelect += menuTreeView_AfterSelect;
+            menuTreeView.DragDrop += menuTreeView_DragDrop;
+            menuTreeView.DragEnter += menuTreeView_DragEnter;
+            menuTreeView.DragOver += menuTreeView_DragOver;
             // 
             // appearTab
             // 
@@ -379,5 +396,6 @@
         private Label ctrl_label;
         private ComboBox shiftAction;
         private Label shiftLabel;
+        private Button sortBtn;
     }
 }
