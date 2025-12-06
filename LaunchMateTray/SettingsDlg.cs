@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LaunchMateTray
 {
@@ -89,6 +90,11 @@ namespace LaunchMateTray
             return keySettings;
         }
 
+        private bool IsGroupNode(TreeNode node)
+        {
+            return node.ImageKey == "ImageList.folder";
+        }
+
         private void addMenuItem_Click(object sender, EventArgs e)
         {
             MenuListItem item = new MenuListItem();
@@ -100,7 +106,7 @@ namespace LaunchMateTray
                 var nodes = menuTreeView.Nodes;
                 if (selNode != null)
                 {
-                    if (selNode.ImageKey == "ImageList.folder")
+                    if (IsGroupNode(selNode))
                     {
                         nodes = selNode.Nodes;
                     }
@@ -113,11 +119,13 @@ namespace LaunchMateTray
                     if (parentItem != null)
                     {
                         parentItem.AddChild(item);
+                        menuList?.BuildDictionaryItem(item);
                     }
                 }
                 else
                 {
                     menuList?.Root.AddChild(item);
+                    menuList?.BuildDictionaryItem(item);
                 }
                 AddTreeItem(item, nodes ?? menuTreeView.Nodes);
             }
@@ -200,6 +208,132 @@ namespace LaunchMateTray
             }
 
             return ret;
+        }
+
+        private bool ContainsNode(TreeNode dragNode, TreeNode targetNode)
+        {
+            // Check the parent node of the second node.  
+            if (targetNode.Parent == null) return false;
+            if (targetNode.Parent.Equals(dragNode)) return true;
+
+            // If the parent node is not null or equal to the first node,   
+            // call the ContainsNode method recursively using the parent of   
+            // the second node.  
+            return ContainsNode(dragNode, targetNode.Parent);
+        }
+
+        private void menuTreeView_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            // Move the dragged node when the left mouse button is used.  
+            if (e.Button == MouseButtons.Left && e.Item != null)
+            {
+                DoDragDrop(e.Item, DragDropEffects.Move);
+            }
+
+            // Copy the dragged node when the right mouse button is used.  
+            else if (e.Button == MouseButtons.Right && e.Item != null)
+            {
+                DoDragDrop(e.Item, DragDropEffects.Copy);
+            }
+
+        }
+
+        private void menuTreeView_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = e.AllowedEffect;
+        }
+
+        private void menuTreeView_DragOver(object sender, DragEventArgs e)
+        {
+            // Retrieve the client coordinates of the mouse position.  
+            Point targetPoint = menuTreeView.PointToClient(new Point(e.X, e.Y));
+
+            // Select the node at the mouse position.  
+            menuTreeView.SelectedNode = menuTreeView.GetNodeAt(targetPoint);
+        }
+
+        private void menuTreeView_DragDrop(object sender, DragEventArgs e)
+        {
+            // Retrieve the client coordinates of the drop location.  
+            Point targetPoint = menuTreeView.PointToClient(new Point(e.X, e.Y));
+
+            // Retrieve the node at the drop location.  
+            TreeNode? targetNode = menuTreeView.GetNodeAt(targetPoint);
+
+            // Retrieve the node that was dragged.  
+            TreeNode? draggedNode = e.Data != null ? (TreeNode?)e.Data.GetData(typeof(TreeNode)) : null;
+            if (targetNode != null && draggedNode != null)
+            {
+                MenuListItem? dragItem = menuList?.FindMenuItem(draggedNode.Name);
+                MenuListItem? targetItem = menuList?.FindMenuItem(targetNode.Name);
+                if (targetItem == null || dragItem == null) { return; }
+
+                // Confirm that the node at the drop location is not   
+                // the dragged node or a descendant of the dragged node.  
+                if (!draggedNode.Equals(targetNode))
+                {
+                    if (!ContainsNode(draggedNode, targetNode) && IsGroupNode(targetNode))
+                    {
+                        // If it is a move operation, remove the node from its current   
+                        // location and add it to the node at the drop location.  
+                        if (e.Effect == DragDropEffects.Move)
+                        {
+                            draggedNode.Remove();
+                            dragItem.GetParent()?.RemoveChild(dragItem);
+                            targetNode.Nodes.Add(draggedNode);
+                            targetItem.AddChild(dragItem);
+                        }
+
+                        // If it is a copy operation, clone the dragged node   
+                        // and add it to the node at the drop location.  
+                        else if (e.Effect == DragDropEffects.Copy)
+                        {
+                            targetNode.Nodes.Add((TreeNode)draggedNode.Clone());
+                            targetItem.AddChild((MenuListItem)dragItem.Clone());
+                        }
+
+                        // Expand the node at the location   
+                        // to show the dropped node.  
+                        targetNode.Expand();
+                    }
+                    else
+                    {
+                        draggedNode.Remove();
+                        dragItem.GetParent()?.RemoveChild(dragItem);
+                        targetNode.Parent?.Nodes.Insert(targetNode.Index, draggedNode);
+                        targetItem.GetParent()?.InsertChild(dragItem, targetItem);
+                    }
+                }
+            } else
+            {
+                string[]? files = e.Data?.GetData(DataFormats.FileDrop) as string[];
+                if (files != null && files.Length > 0)
+                {
+                    foreach (string file in files)
+                    {
+                        if (Path.GetExtension(file).ToLower() == ".exe")
+                        {
+                            MenuListItem item = new MenuListItem();
+                            item.Path = file;
+                            item.Name = Path.GetFileNameWithoutExtension(file);
+                            AddTreeItem(item, menuTreeView.Nodes);
+                            menuList?.Root.AddChild(item);
+                            menuList?.BuildDictionaryItem(item);
+                        }
+                    }
+                }
+            }
+
+
+
+
+        }
+
+        private void sortBtn_Click(object sender, EventArgs e)
+        {
+            menuTreeView.Sort();
+            menuList?.Sort();
+
         }
     }
 }

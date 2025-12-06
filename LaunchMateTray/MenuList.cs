@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,13 +26,14 @@ namespace LaunchMateTray
      * MenuListItem
      * 
      * ***********************************/
-    public class MenuListItem: ICloneable
+    public class MenuListItem : ICloneable, IEquatable<MenuListItem>, IComparable<MenuListItem>
     {
         protected MenuItemInfo info = new MenuItemInfo();
         protected List<MenuListItem>? children;
         protected MenuListItem? parent;
 
-        public MenuListItem() {
+        public MenuListItem()
+        {
             Init();
         }
         public MenuListItem(MenuItemInfo itemInfo)
@@ -56,12 +58,12 @@ namespace LaunchMateTray
                         {
                             AddChild(new MenuListItem(child));
                         }
-                        
+
                     }
                     break;
 
                 case "Application":
-                    info.itemType=menuItemType.Application;
+                    info.itemType = menuItemType.Application;
                     info.itemPath = appItem.Path ?? "";
                     info.itemArgs = appItem.Arguments ?? "";
                     break;
@@ -78,7 +80,8 @@ namespace LaunchMateTray
         public Object Clone()
         {
             MenuListItem ret = new MenuListItem(info);
-            if (children != null) {
+            if (children != null)
+            {
                 foreach (var child in children)
                 {
                     ret.AddChild((MenuListItem)child.Clone());
@@ -158,6 +161,15 @@ namespace LaunchMateTray
             child.SetParent(this);
         }
 
+        public void InsertChild(MenuListItem child, MenuListItem sibling)
+        {
+            if (children != null)
+            {
+                int index = children.IndexOf(sibling);
+                children.Insert(index, child);
+            }
+        }
+
         public void RemoveChild(MenuListItem child)
         {
             children?.Remove(child);
@@ -204,6 +216,47 @@ namespace LaunchMateTray
                     break;
             }
             return ret;
+        }
+
+        public void Sort()
+        {
+            if (children != null)
+            {
+                children.Sort();
+                foreach (MenuListItem child in children)
+                {
+                    child.Sort();
+                }
+            }
+        }
+
+        public bool Equals(MenuListItem? other)
+        {
+            bool ret = false;
+
+            if (other != null)
+            {
+                ret = Name == other.Name && Path == other.Path && Arguments == other.Arguments;
+            }
+
+            return ret;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as MenuListItem);
+        }
+
+        public int CompareTo(MenuListItem? item)
+        {
+            int ret = item != null ? Name.CompareTo(item.Name) : 1;
+
+            return ret;
+        }
+
+        public override int GetHashCode()
+        {
+            return info.GetHashCode();
         }
     }
 
@@ -335,6 +388,11 @@ namespace LaunchMateTray
             ret.BuildDictionary();
 
             return ret;
+        }
+
+        public void Sort()
+        {
+            rootItem.Sort();
         }
     }
 }

@@ -8,7 +8,14 @@ namespace LaunchMateTray
 {
     public class ColorSettings: SortedList<String,String>
     {
-
+        public ColorSettings() { }
+        public ColorSettings(ColorSettings colors)
+        {
+            Add("backclr", colors["backclr"]);
+            Add("selectclr", colors["selectclr"]);
+            Add("textclr", colors["textclr"]);
+            Add("seltextclr", colors["seltextclr"]);
+        }
     }
 
     public class KeySettings: SortedList<String,int>
@@ -27,7 +34,7 @@ namespace LaunchMateTray
 
     public class JsonSettings
     {
-        public ColorSettings Appearance { get; set; } = new ColorSettings();
+        public ColorSettings Appearance { get; set; } = new ColorSettings(LaunchMateTraySettings.defaultColors);
         public KeySettings Keys { get; set; } = new KeySettings();
         public List<JsonAppItem>? Apps { get; set; } = new List<JsonAppItem>();
 
@@ -95,7 +102,18 @@ namespace LaunchMateTray
             if (jsonString != null)
             {
                 var data = JsonSerializer.Deserialize<JsonSettings>(jsonString);
-                if (data != null) { Settings = data; }
+                if (data != null)
+                {
+                    Settings = data;
+                    if (Settings.Appearance == null
+                        || !Settings.Appearance.ContainsKey("backclr")
+                        || !Settings.Appearance.ContainsKey("selectclr")
+                        || !Settings.Appearance.ContainsKey("textclr")
+                        || !Settings.Appearance.ContainsKey("seltextclr"))
+                    {
+                        Settings.Appearance = defaultColors;
+                    }
+                }
             }
         }
 
