@@ -55,11 +55,6 @@ namespace LaunchMateTray
         {
             var dlg = new SettingsDlg();
   
-            dlg.SetMenuList((MenuList)menuList.Clone());
-            ColorSettings colors = settings.Settings.Appearance ?? LaunchMateTraySettings.defaultColors;
-            dlg.SetColorSettings(colors);
-            dlg.SetKeySettings(settings.Settings.Keys);
-
             if (dlg.ShowDialog(menu) == DialogResult.OK)
             {
                 var dlgMenuList = dlg.GetMenuList();

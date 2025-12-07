@@ -17,17 +17,35 @@ namespace LaunchMateTray
     public partial class SettingsDlg : Form
     {
         protected MenuList? menuList;
+        protected LaunchMateTrayContextMenuStrip? itemContextMenu;
+        protected LaunchMateTraySettings? settings;
 
         public SettingsDlg()
         {
             InitializeComponent();
             menuTreeView.ImageList = new ImageList();
+            settings = new LaunchMateTraySettings();
+            settings.ReadSettings();
+            InitMenuList();
+            InitColorSettings();
+            InitKeySettings();
         }
 
         public MenuList? GetMenuList() { return menuList; }
-        public void SetMenuList(MenuList menulist)
+
+        public void InitMenuList()
         {
-            menuList = menulist;
+            if (settings == null) { return; }
+
+            menuList = new MenuList();
+            menuList.ImportSettings(settings.Settings.Apps);
+            itemContextMenu = new LaunchMateTrayContextMenuStrip(settings.Settings.Appearance);
+            itemContextMenu.Items.AddRange([
+                new ToolStripMenuItem("Add",null,AddItemHandler),
+                new ToolStripMenuItem("Edit",null,EditItemHandler),
+                new ToolStripMenuItem("Delete",null,DeleteItemHandler)
+            ]);
+
             var children = menuList.GetRootChildren();
             if (children != null)
             {
@@ -54,8 +72,10 @@ namespace LaunchMateTray
 
             return colors;
         }
-        public void SetColorSettings(ColorSettings colorSettings)
+        public void InitColorSettings()
         {
+            ColorSettings? colorSettings = settings?.Settings.Appearance;
+            if (colorSettings == null) { return; }
             int clr = Int32.Parse(colorSettings != null ? colorSettings["backclr"] : LaunchMateTraySettings.defaultColors["backclr"], NumberStyles.AllowHexSpecifier);
             Color bkClr = Color.FromArgb(clr);
             backclr_btn.BtnColor = bkClr;
@@ -73,8 +93,9 @@ namespace LaunchMateTray
             seltextclr_btn.BtnColor = selTxtClr;
         }
 
-        public void SetKeySettings(KeySettings keySettings)
+        public void InitKeySettings()
         {
+            KeySettings? keySettings = settings?.Settings.Keys;
             ctrlAction.SelectedIndex = keySettings != null ? keySettings["ctrl"] : 0;
             shiftAction.SelectedIndex = keySettings != null ? keySettings["shift"] : 1;
         }
@@ -95,7 +116,7 @@ namespace LaunchMateTray
             return node.ImageKey == "ImageList.folder";
         }
 
-        private void addMenuItem_Click(object sender, EventArgs e)
+        public void AddItemHandler(object? sender, EventArgs e)
         {
             MenuListItem item = new MenuListItem();
             item.Type = 0;
@@ -130,8 +151,7 @@ namespace LaunchMateTray
                 AddTreeItem(item, nodes ?? menuTreeView.Nodes);
             }
         }
-
-        private void editMenuItem_Click(object sender, EventArgs e)
+        public void EditItemHandler(object? sender, EventArgs e)
         {
             var selNode = menuTreeView.SelectedNode;
             if (selNode != null)
@@ -147,9 +167,9 @@ namespace LaunchMateTray
                 }
 
             }
-        }
 
-        private void deleteItemBtn_Click(object sender, EventArgs e)
+        }
+        public void DeleteItemHandler(object? sender, EventArgs e)
         {
             var selNode = menuTreeView.SelectedNode;
             if (selNode != null)
@@ -170,7 +190,22 @@ namespace LaunchMateTray
                     }
                 }
             }
+        }
 
+        private void addMenuItem_Click(object sender, EventArgs e)
+        {
+            AddItemHandler(sender, e);
+        }
+
+        private void editMenuItem_Click(object sender, EventArgs e)
+        {
+            EditItemHandler(sender, e);
+        }
+
+
+        private void deleteItemBtn_Click(object sender, EventArgs e)
+        {
+            DeleteItemHandler(sender, e);
         }
 
         private void menuTreeView_AfterSelect(object sender, TreeViewEventArgs e)
@@ -207,6 +242,10 @@ namespace LaunchMateTray
                     break;
             }
 
+            if (itemContextMenu != null && ret != null)
+            {
+                ret.ContextMenuStrip = itemContextMenu;
+            }
             return ret;
         }
 
@@ -304,7 +343,8 @@ namespace LaunchMateTray
                         targetItem.GetParent()?.InsertChild(dragItem, targetItem);
                     }
                 }
-            } else
+            }
+            else
             {
                 string[]? files = e.Data?.GetData(DataFormats.FileDrop) as string[];
                 if (files != null && files.Length > 0)
@@ -334,6 +374,16 @@ namespace LaunchMateTray
             menuTreeView.Sort();
             menuList?.Sort();
 
+        }
+
+        private void menuTreeView_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                //Point targetPoint = menuTreeView.PointToClient();
+                TreeNode? targetNode = menuTreeView.GetNodeAt(new Point(e.X, e.Y));
+                if (targetNode != null) { menuTreeView.SelectedNode = targetNode; }
+            }
         }
     }
 }
