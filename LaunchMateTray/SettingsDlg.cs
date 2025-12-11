@@ -17,17 +17,35 @@ namespace LaunchMateTray
     public partial class SettingsDlg : Form
     {
         protected MenuList? menuList;
+        protected LaunchMateTrayContextMenuStrip? itemContextMenu;
+        protected LaunchMateTraySettings? settings;
 
         public SettingsDlg()
         {
             InitializeComponent();
             menuTreeView.ImageList = new ImageList();
+            settings = new LaunchMateTraySettings();
+            settings.ReadSettings();
+            InitMenuList();
+            InitColorSettings();
+            InitKeySettings();
         }
 
         public MenuList? GetMenuList() { return menuList; }
-        public void SetMenuList(MenuList menulist)
+
+        public void InitMenuList()
         {
-            menuList = menulist;
+            if (settings == null) { return; }
+
+            menuList = new MenuList();
+            menuList.ImportSettings(settings.Settings.Apps);
+            itemContextMenu = new LaunchMateTrayContextMenuStrip(settings.Settings.Appearance);
+            itemContextMenu.Items.AddRange([
+                new ToolStripMenuItem("Add",null,AddItemHandler),
+                new ToolStripMenuItem("Edit",null,EditItemHandler),
+                new ToolStripMenuItem("Delete",null,DeleteItemHandler)
+            ]);
+
             var children = menuList.GetRootChildren();
             if (children != null)
             {
@@ -54,8 +72,10 @@ namespace LaunchMateTray
 
             return colors;
         }
-        public void SetColorSettings(ColorSettings colorSettings)
+        public void InitColorSettings()
         {
+            ColorSettings? colorSettings = settings?.Settings.Appearance;
+            if (colorSettings == null) { return; }
             int clr = Int32.Parse(colorSettings != null ? colorSettings["backclr"] : LaunchMateTraySettings.defaultColors["backclr"], NumberStyles.AllowHexSpecifier);
             Color bkClr = Color.FromArgb(clr);
             backclr_btn.BtnColor = bkClr;
@@ -73,8 +93,9 @@ namespace LaunchMateTray
             seltextclr_btn.BtnColor = selTxtClr;
         }
 
-        public void SetKeySettings(KeySettings keySettings)
+        public void InitKeySettings()
         {
+            KeySettings? keySettings = settings?.Settings.Keys;
             ctrlAction.SelectedIndex = keySettings != null ? keySettings["ctrl"] : 0;
             shiftAction.SelectedIndex = keySettings != null ? keySettings["shift"] : 1;
         }
@@ -92,10 +113,10 @@ namespace LaunchMateTray
 
         private bool IsGroupNode(TreeNode node)
         {
-            return node.ImageKey == "ImageList.folder";
+            return node.Name[0] == 'g';
         }
 
-        private void addMenuItem_Click(object sender, EventArgs e)
+        public void AddItemHandler(object? sender, EventArgs e)
         {
             MenuListItem item = new MenuListItem();
             item.Type = 0;
@@ -130,8 +151,7 @@ namespace LaunchMateTray
                 AddTreeItem(item, nodes ?? menuTreeView.Nodes);
             }
         }
-
-        private void editMenuItem_Click(object sender, EventArgs e)
+        public void EditItemHandler(object? sender, EventArgs e)
         {
             var selNode = menuTreeView.SelectedNode;
             if (selNode != null)
@@ -143,13 +163,16 @@ namespace LaunchMateTray
                     if (dlg.ShowDialog(this) == DialogResult.OK)
                     {
                         selNode.Text = item.Name;
+                        int index = menuTreeView?.ImageList?.Images.IndexOfKey(item.Id) ?? -1;
+                        Bitmap resizedBitmap = new Bitmap(item.GetIcon().ToBitmap(), new Size(16, 16));
+                        menuTreeView?.ImageList?.Images[index] = resizedBitmap;
                     }
                 }
 
             }
-        }
 
-        private void deleteItemBtn_Click(object sender, EventArgs e)
+        }
+        public void DeleteItemHandler(object? sender, EventArgs e)
         {
             var selNode = menuTreeView.SelectedNode;
             if (selNode != null)
@@ -170,7 +193,22 @@ namespace LaunchMateTray
                     }
                 }
             }
+        }
 
+        private void addMenuItem_Click(object sender, EventArgs e)
+        {
+            AddItemHandler(sender, e);
+        }
+
+        private void editMenuItem_Click(object sender, EventArgs e)
+        {
+            EditItemHandler(sender, e);
+        }
+
+
+        private void deleteItemBtn_Click(object sender, EventArgs e)
+        {
+            DeleteItemHandler(sender, e);
         }
 
         private void menuTreeView_AfterSelect(object sender, TreeViewEventArgs e)
@@ -188,14 +226,14 @@ namespace LaunchMateTray
             {
                 case menuItemType.Application:
                     if (!File.Exists(item.Path)) { MessageBox.Show("Invalid Path"); return null; }
-                    Icon icon = Icon.ExtractAssociatedIcon(item.Path) ?? SystemIcons.GetStockIcon(StockIconId.Error, 16);
-                    menuTreeView?.ImageList?.Images.Add(item.Path, icon);
-                    ret = nodes.Add(item.Id, item.Name, item.Path, item.Path);
+                    Icon icon = item.GetIcon() ?? SystemIcons.GetStockIcon(StockIconId.Error, 16);
+                    menuTreeView?.ImageList?.Images.Add(item.Id, icon);
+                    ret = nodes.Add(item.Id, item.Name, item.Id, item.Id);
                     break;
 
                 case menuItemType.Group:
-                    menuTreeView?.ImageList?.Images.Add("ImageList.folder", SystemIcons.GetStockIcon(StockIconId.Folder, 16));
-                    ret = nodes.Add(item.Id, item.Name, "ImageList.folder", "ImageList.folder");
+                    menuTreeView?.ImageList?.Images.Add(item.Id, item.GetIcon() ?? SystemIcons.GetStockIcon(StockIconId.Error, 16));
+                    ret = nodes.Add(item.Id, item.Name, item.Id, item.Id);
                     var children = item.GetChildren();
                     if (children != null)
                     {
@@ -207,6 +245,10 @@ namespace LaunchMateTray
                     break;
             }
 
+            if (itemContextMenu != null && ret != null)
+            {
+                ret.ContextMenuStrip = itemContextMenu;
+            }
             return ret;
         }
 
@@ -304,7 +346,8 @@ namespace LaunchMateTray
                         targetItem.GetParent()?.InsertChild(dragItem, targetItem);
                     }
                 }
-            } else
+            }
+            else
             {
                 string[]? files = e.Data?.GetData(DataFormats.FileDrop) as string[];
                 if (files != null && files.Length > 0)
@@ -334,6 +377,16 @@ namespace LaunchMateTray
             menuTreeView.Sort();
             menuList?.Sort();
 
+        }
+
+        private void menuTreeView_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                //Point targetPoint = menuTreeView.PointToClient();
+                TreeNode? targetNode = menuTreeView.GetNodeAt(new Point(e.X, e.Y));
+                if (targetNode != null) { menuTreeView.SelectedNode = targetNode; }
+            }
         }
     }
 }

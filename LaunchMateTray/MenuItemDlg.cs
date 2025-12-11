@@ -5,6 +5,7 @@ using System.ComponentModel.Design.Serialization;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,8 @@ namespace LaunchMateTray
             nameInput.Text = inputMenuItem.Name;
             pathInput.Text = inputMenuItem.Path;
             argsInput.Text = inputMenuItem.Arguments;
+            iconInput.Text = inputMenuItem.IconPath;
+
             menuItem = inputMenuItem;
         }
 
@@ -52,6 +55,7 @@ namespace LaunchMateTray
             menuItem.Name = nameInput.Text;
             menuItem.Path = pathInput.Text;
             menuItem.Arguments = argsInput.Text;
+            menuItem.IconPath = iconInput.Text;
         }
 
         private void ToggleTypeFields(menuItemType type)
@@ -118,7 +122,33 @@ namespace LaunchMateTray
 
         private void pathInput_TextChanged(object sender, EventArgs e)
         {
-            enableOKBtn();
+            if (!File.Exists(pathInput.Text))
+            {
+                MessageBox.Show("Invalid Path");
+            }
+            else
+            {
+                enableOKBtn();
+            }
+        }
+
+        private void iconBrowseBtn_Click(object sender, EventArgs e)
+        {
+            var dlg = new OpenFileDialog();
+            dlg.Filter = "Applications (*.exe)|*.exe|Icons (*.ico)|*.ico|Images (*.png)|*.png";
+
+            if (dlg.ShowDialog(this) == DialogResult.OK)
+            {
+                iconInput.Text = dlg.FileName;
+            }
+        }
+
+        private void iconInput_TextChanged(object sender, EventArgs e)
+        {
+            if (!File.Exists(iconInput.Text))
+            {
+                MessageBox.Show("Invalid Icon Path");
+            }
         }
     }
 }

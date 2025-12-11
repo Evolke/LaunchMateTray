@@ -191,6 +191,7 @@
             menuTreeView.DragDrop += menuTreeView_DragDrop;
             menuTreeView.DragEnter += menuTreeView_DragEnter;
             menuTreeView.DragOver += menuTreeView_DragOver;
+			menuTreeView.MouseDown += menuTreeView_MouseDown;
             // 
             // appearTab
             // 

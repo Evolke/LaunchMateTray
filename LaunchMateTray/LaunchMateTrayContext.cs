@@ -55,11 +55,6 @@ namespace LaunchMateTray
         {
             var dlg = new SettingsDlg();
   
-            dlg.SetMenuList((MenuList)menuList.Clone());
-            ColorSettings colors = settings.Settings.Appearance ?? LaunchMateTraySettings.defaultColors;
-            dlg.SetColorSettings(colors);
-            dlg.SetKeySettings(settings.Settings.Keys);
-
             if (dlg.ShowDialog(menu) == DialogResult.OK)
             {
                 var dlgMenuList = dlg.GetMenuList();
@@ -127,7 +122,7 @@ namespace LaunchMateTray
 
         private void AddMenuGroup(MenuListItem item, ToolStripItemCollection menuItems)
         {
-            var dropdown = new ToolStripMenuItem(item.Name, SystemIcons.GetStockIcon(StockIconId.Folder, 16).ToBitmap(), null, item.Name);
+            var dropdown = new ToolStripMenuItem(item.Name, item.GetIcon()?.ToBitmap(), null, item.Name);
             var children = item.GetChildren();
             if (children != null)
             {
@@ -151,7 +146,7 @@ namespace LaunchMateTray
 
        private void AddMenuApp(MenuListItem item, ToolStripItemCollection menuItems)
        {
-           var stripItem = new ToolStripMenuItem(item.Name, Icon.ExtractAssociatedIcon(item.Path)?.ToBitmap(), AppHandler, item.Name);
+           var stripItem = new ToolStripMenuItem(item.Name, item.GetIcon()?.ToBitmap(), AppHandler, item.Name);
            stripItem.Name = item.Id;
            menuItems.Add(stripItem);
        }
