@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Drawing;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Security.Policy;
@@ -17,6 +18,7 @@ namespace LaunchMateTray
         public string itemName;
         public string itemPath;
         public string itemArgs;
+        public string itemIconPath;
         public uint order;
     };
 
@@ -46,7 +48,8 @@ namespace LaunchMateTray
         {
             Init();
 
-            info.itemName = appItem.Name != null ? appItem.Name : "";
+            info.itemName = appItem.Name ?? "";
+            info.itemIconPath = appItem.IconPath ?? "";
 
             switch (appItem.Type)
             {
@@ -93,6 +96,15 @@ namespace LaunchMateTray
         public void GenerateId()
         {
             info.id = Guid.NewGuid().ToString();
+            switch (info.itemType)
+            {
+                case menuItemType.Group:
+                    info.id = "g" + info.id;
+                    break;
+                case menuItemType.Application:
+                    info.id = "a" + info.id;
+                    break;
+            }
         }
 
         public string Id
@@ -155,6 +167,64 @@ namespace LaunchMateTray
             }
         }
 
+        public string IconPath
+        {
+            get
+            {
+                return info.itemIconPath;
+            }
+            set
+            {
+                info.itemIconPath = value;
+            }
+        }
+
+        private Icon? ConvertImage2Icon(string path)
+        {
+            Icon? ret = null;
+            Bitmap bitmap = new Bitmap(path);
+            Bitmap resizedBitmap = new Bitmap(bitmap, new Size(16, 16));
+            IntPtr hIcon = resizedBitmap.GetHicon();
+            ret = Icon.FromHandle(hIcon);
+            return ret;
+        }
+
+        public Icon? GetIcon()
+        {
+            Icon? ret = null;
+            string exePath = info.itemPath;
+
+            if (info.itemIconPath != null && info.itemIconPath.Length > 0 && File.Exists(info.itemIconPath))
+            {
+                if (System.IO.Path.GetExtension(info.itemIconPath).ToLower() == ".ico")
+                {
+                    ret = new Icon(info.itemIconPath);
+                }
+                else if (System.IO.Path.GetExtension(info.itemIconPath).ToLower() == ".png")
+                {
+                    ret = ConvertImage2Icon(info.itemIconPath);
+                }
+                else
+                {
+                    exePath = info.itemIconPath;
+                }
+            }
+
+            if (ret == null) 
+            {
+                if (exePath != null && exePath.Length > 0)
+                {
+                    ret = Icon.ExtractAssociatedIcon(exePath);
+                }
+                else if (info.itemType == menuItemType.Group)
+                {
+                    ret = SystemIcons.GetStockIcon(StockIconId.Folder, 16);
+                }
+            }
+
+            return ret;
+        }
+
         public void AddChild(MenuListItem child)
         {
             if (children != null) { children.Add(child); }
@@ -200,11 +270,13 @@ namespace LaunchMateTray
                     ret.Name = info.itemName;
                     ret.Path = info.itemPath;
                     ret.Arguments = info.itemArgs;
+                    ret.IconPath = info.itemIconPath;
                     break;
 
                 case menuItemType.Group:
                     ret.Type = "Group";
                     ret.Name = info.itemName;
+                    ret.IconPath = info.itemIconPath;
                     if (children != null)
                     {
                         ret.Children = new List<JsonAppItem>();

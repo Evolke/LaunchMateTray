@@ -113,7 +113,7 @@ namespace LaunchMateTray
 
         private bool IsGroupNode(TreeNode node)
         {
-            return node.ImageKey == "ImageList.folder";
+            return node.Name[0] == 'g';
         }
 
         public void AddItemHandler(object? sender, EventArgs e)
@@ -163,6 +163,9 @@ namespace LaunchMateTray
                     if (dlg.ShowDialog(this) == DialogResult.OK)
                     {
                         selNode.Text = item.Name;
+                        int index = menuTreeView?.ImageList?.Images.IndexOfKey(item.Id) ?? -1;
+                        Bitmap resizedBitmap = new Bitmap(item.GetIcon().ToBitmap(), new Size(16, 16));
+                        menuTreeView?.ImageList?.Images[index] = resizedBitmap;
                     }
                 }
 
@@ -223,14 +226,14 @@ namespace LaunchMateTray
             {
                 case menuItemType.Application:
                     if (!File.Exists(item.Path)) { MessageBox.Show("Invalid Path"); return null; }
-                    Icon icon = Icon.ExtractAssociatedIcon(item.Path) ?? SystemIcons.GetStockIcon(StockIconId.Error, 16);
-                    menuTreeView?.ImageList?.Images.Add(item.Path, icon);
-                    ret = nodes.Add(item.Id, item.Name, item.Path, item.Path);
+                    Icon icon = item.GetIcon() ?? SystemIcons.GetStockIcon(StockIconId.Error, 16);
+                    menuTreeView?.ImageList?.Images.Add(item.Id, icon);
+                    ret = nodes.Add(item.Id, item.Name, item.Id, item.Id);
                     break;
 
                 case menuItemType.Group:
-                    menuTreeView?.ImageList?.Images.Add("ImageList.folder", SystemIcons.GetStockIcon(StockIconId.Folder, 16));
-                    ret = nodes.Add(item.Id, item.Name, "ImageList.folder", "ImageList.folder");
+                    menuTreeView?.ImageList?.Images.Add(item.Id, item.GetIcon() ?? SystemIcons.GetStockIcon(StockIconId.Error, 16));
+                    ret = nodes.Add(item.Id, item.Name, item.Id, item.Id);
                     var children = item.GetChildren();
                     if (children != null)
                     {

@@ -39,13 +39,16 @@
             pathLabel = new Label();
             argsLabel = new Label();
             argsInput = new TextBox();
+            label3 = new Label();
+            iconInput = new TextBox();
+            iconBrowseBtn = new Button();
             SuspendLayout();
             // 
             // cancelButton
             // 
             cancelButton.DialogResult = DialogResult.Cancel;
             cancelButton.FlatStyle = FlatStyle.Flat;
-            cancelButton.Location = new Point(375, 163);
+            cancelButton.Location = new Point(377, 202);
             cancelButton.Name = "cancelButton";
             cancelButton.Size = new Size(75, 23);
             cancelButton.TabIndex = 1;
@@ -57,7 +60,7 @@
             okButton.DialogResult = DialogResult.OK;
             okButton.Enabled = false;
             okButton.FlatStyle = FlatStyle.Flat;
-            okButton.Location = new Point(293, 163);
+            okButton.Location = new Point(295, 202);
             okButton.Name = "okButton";
             okButton.Size = new Size(75, 23);
             okButton.TabIndex = 7;
@@ -124,7 +127,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(42, 52);
+            label2.Location = new Point(37, 52);
             label2.Name = "label2";
             label2.Size = new Size(44, 15);
             label2.TabIndex = 3;
@@ -134,7 +137,7 @@
             // pathLabel
             // 
             pathLabel.AutoSize = true;
-            pathLabel.Location = new Point(50, 86);
+            pathLabel.Location = new Point(45, 86);
             pathLabel.Name = "pathLabel";
             pathLabel.Size = new Size(36, 15);
             pathLabel.TabIndex = 3;
@@ -160,17 +163,51 @@
             argsInput.Size = new Size(311, 23);
             argsInput.TabIndex = 5;
             // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(51, 156);
+            label3.Name = "label3";
+            label3.Size = new Size(30, 15);
+            label3.TabIndex = 3;
+            label3.Text = "Icon";
+            // 
+            // iconInput
+            // 
+            iconInput.BackColor = Color.Black;
+            iconInput.BorderStyle = BorderStyle.FixedSingle;
+            iconInput.ForeColor = Color.White;
+            iconInput.Location = new Point(94, 154);
+            iconInput.Name = "iconInput";
+            iconInput.Size = new Size(311, 23);
+            iconInput.TabIndex = 5;
+            iconInput.TextChanged += iconInput_TextChanged;
+            // 
+            // iconBrowseBtn
+            // 
+            iconBrowseBtn.FlatStyle = FlatStyle.Flat;
+            iconBrowseBtn.Location = new Point(413, 154);
+            iconBrowseBtn.Name = "iconBrowseBtn";
+            iconBrowseBtn.Size = new Size(39, 23);
+            iconBrowseBtn.TabIndex = 4;
+            iconBrowseBtn.Text = "...";
+            iconBrowseBtn.UseVisualStyleBackColor = true;
+            iconBrowseBtn.Click += iconBrowseBtn_Click;
+            // 
             // MenuItemDlg
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
-            ClientSize = new Size(462, 205);
+            ClientSize = new Size(462, 237);
             ControlBox = false;
+            Controls.Add(iconBrowseBtn);
             Controls.Add(browse);
             Controls.Add(nameInput);
+            Controls.Add(iconInput);
             Controls.Add(argsInput);
             Controls.Add(pathInput);
+            Controls.Add(label3);
             Controls.Add(argsLabel);
             Controls.Add(itemType);
             Controls.Add(pathLabel);
@@ -203,5 +240,8 @@
         private Label pathLabel;
         private Label argsLabel;
         private TextBox argsInput;
+        private Label label3;
+        private TextBox iconInput;
+        private Button iconBrowseBtn;
     }
 }
