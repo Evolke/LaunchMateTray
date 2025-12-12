@@ -113,7 +113,7 @@ namespace LaunchMateTray
 
         private bool IsGroupNode(TreeNode node)
         {
-            return node.Name[0] == 'g';
+            return node.Name.StartsWith("g:");
         }
 
         public void AddItemHandler(object? sender, EventArgs e)

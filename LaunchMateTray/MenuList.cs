@@ -54,7 +54,7 @@ namespace LaunchMateTray
             switch (appItem.Type)
             {
                 case "Group":
-                    info.itemType = menuItemType.Group;
+                    this.Type = menuItemType.Group;
                     if (appItem.Children != null)
                     {
                         foreach (var child in appItem.Children)
@@ -66,7 +66,7 @@ namespace LaunchMateTray
                     break;
 
                 case "Application":
-                    info.itemType = menuItemType.Application;
+                    this.Type = menuItemType.Application;
                     info.itemPath = appItem.Path ?? "";
                     info.itemArgs = appItem.Arguments ?? "";
                     break;
@@ -99,10 +99,10 @@ namespace LaunchMateTray
             switch (info.itemType)
             {
                 case menuItemType.Group:
-                    info.id = "g" + info.id;
+                    info.id = "g:" + info.id;
                     break;
                 case menuItemType.Application:
-                    info.id = "a" + info.id;
+                    info.id = "a:" + info.id;
                     break;
             }
         }
@@ -128,6 +128,18 @@ namespace LaunchMateTray
             set
             {
                 info.itemType = value;
+                if (info.id.Length > 0)
+                {
+                    switch (value)
+                    {
+                        case menuItemType.Application:
+                            if (!info.id.StartsWith("a:")) { info.id = info.id.Remove(0, 2).Insert(0, "a:"); }
+                            break;
+                        case menuItemType.Group:
+                            if (!info.id.StartsWith("g:")) { info.id = info.id.Remove(0, 2).Insert(0, "g:"); }
+                            break;
+                    }
+                }
             }
         }
 
@@ -189,6 +201,15 @@ namespace LaunchMateTray
             return ret;
         }
 
+        public bool IsExecutable(string? path=null)
+        {
+            bool ret = false;
+            if (path == null) { path = info.itemPath; }
+            ret = File.Exists(path) && System.IO.Path.GetExtension(path).ToLower() == ".exe";
+
+            return ret;
+        }
+
         public Icon? GetIcon()
         {
             Icon? ret = null;
@@ -212,13 +233,17 @@ namespace LaunchMateTray
 
             if (ret == null) 
             {
-                if (exePath != null && exePath.Length > 0)
+                if (exePath != null && exePath.Length > 0 && IsExecutable(exePath))
                 {
                     ret = Icon.ExtractAssociatedIcon(exePath);
                 }
                 else if (info.itemType == menuItemType.Group)
                 {
                     ret = SystemIcons.GetStockIcon(StockIconId.Folder, 16);
+                }
+                else
+                {
+                    ret = SystemIcons.GetStockIcon(StockIconId.Error, 16);
                 }
             }
 
