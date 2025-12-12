@@ -104,8 +104,10 @@ namespace LaunchMateTray
                 var menuItem = menuList.FindMenuItem(id ?? "");
                 if (menuItem != null)
                 {
+                    if (!menuItem.IsExecutable()) { return; }
                     ProcessStartInfo psInfo = new ProcessStartInfo();
                     psInfo.FileName = menuItem.Path;
+
                     if (menuItem.Arguments != null) { psInfo.Arguments = menuItem.Arguments; }
                     if (Control.ModifierKeys == Keys.Control)
                     {
