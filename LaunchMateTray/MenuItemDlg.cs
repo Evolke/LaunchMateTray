@@ -122,14 +122,7 @@ namespace LaunchMateTray
 
         private void pathInput_TextChanged(object sender, EventArgs e)
         {
-            if (!File.Exists(pathInput.Text))
-            {
-                MessageBox.Show("Invalid Path");
-            }
-            else
-            {
-                enableOKBtn();
-            }
+            enableOKBtn();
         }
 
         private void iconBrowseBtn_Click(object sender, EventArgs e)
@@ -145,10 +138,6 @@ namespace LaunchMateTray
 
         private void iconInput_TextChanged(object sender, EventArgs e)
         {
-            if (!File.Exists(iconInput.Text))
-            {
-                MessageBox.Show("Invalid Icon Path");
-            }
         }
     }
 }
