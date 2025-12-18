@@ -156,7 +156,7 @@ namespace LaunchMateTray
             var selNode = menuTreeView.SelectedNode;
             if (selNode != null)
             {
-                var item = menuList?.FindMenuItem(selNode.Name);
+                MenuListItem? item = menuList?.FindMenuItem(selNode.Name);
                 if (item != null)
                 {
                     var dlg = new MenuItemDlg("Edit Menu Item", item);
@@ -164,8 +164,12 @@ namespace LaunchMateTray
                     {
                         selNode.Text = item.Name;
                         int index = menuTreeView?.ImageList?.Images.IndexOfKey(item.Id) ?? -1;
-                        Bitmap resizedBitmap = new Bitmap(item.GetIcon().ToBitmap(), new Size(16, 16));
-                        menuTreeView?.ImageList?.Images[index] = resizedBitmap;
+                        Icon? itemIcon = item.GetIcon();
+                        if (itemIcon != null)
+                        {
+                            Bitmap resizedBitmap = new Bitmap(itemIcon.ToBitmap(), new Size(16, 16));
+                            menuTreeView?.ImageList?.Images[index] = resizedBitmap;
+                        }
                     }
                 }
 
