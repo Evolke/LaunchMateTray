@@ -64,7 +64,7 @@
             okButton.DialogResult = DialogResult.OK;
             okButton.FlatStyle = FlatStyle.Flat;
             okButton.ForeColor = Color.White;
-            okButton.Location = new Point(608, 415);
+            okButton.Location = new Point(514, 400);
             okButton.Name = "okButton";
             okButton.Size = new Size(75, 23);
             okButton.TabIndex = 0;
@@ -76,7 +76,7 @@
             cancelButton.DialogResult = DialogResult.Cancel;
             cancelButton.FlatStyle = FlatStyle.Flat;
             cancelButton.ForeColor = Color.White;
-            cancelButton.Location = new Point(691, 415);
+            cancelButton.Location = new Point(597, 400);
             cancelButton.Name = "cancelButton";
             cancelButton.Size = new Size(75, 23);
             cancelButton.TabIndex = 0;
@@ -98,7 +98,7 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 2.077922F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel1.Size = new Size(776, 426);
+            tableLayoutPanel1.Size = new Size(676, 426);
             tableLayoutPanel1.TabIndex = 1;
             // 
             // tabControl1
@@ -109,7 +109,7 @@
             tabControl1.Location = new Point(3, 3);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(758, 371);
+            tabControl1.Size = new Size(658, 371);
             tabControl1.TabIndex = 2;
             // 
             // appTab
@@ -124,14 +124,14 @@
             appTab.Location = new Point(4, 24);
             appTab.Name = "appTab";
             appTab.Padding = new Padding(3);
-            appTab.Size = new Size(750, 343);
+            appTab.Size = new Size(650, 343);
             appTab.TabIndex = 0;
             appTab.Text = "Applications";
             // 
             // sortBtn
             // 
             sortBtn.FlatStyle = FlatStyle.Flat;
-            sortBtn.Location = new Point(690, 93);
+            sortBtn.Location = new Point(591, 93);
             sortBtn.Name = "sortBtn";
             sortBtn.Size = new Size(54, 23);
             sortBtn.TabIndex = 2;
@@ -143,7 +143,7 @@
             // 
             deleteItemBtn.Enabled = false;
             deleteItemBtn.FlatStyle = FlatStyle.Flat;
-            deleteItemBtn.Location = new Point(690, 64);
+            deleteItemBtn.Location = new Point(591, 64);
             deleteItemBtn.Name = "deleteItemBtn";
             deleteItemBtn.Size = new Size(54, 23);
             deleteItemBtn.TabIndex = 1;
@@ -155,7 +155,7 @@
             // 
             editMenuItem.Enabled = false;
             editMenuItem.FlatStyle = FlatStyle.Flat;
-            editMenuItem.Location = new Point(690, 35);
+            editMenuItem.Location = new Point(591, 35);
             editMenuItem.Name = "editMenuItem";
             editMenuItem.Size = new Size(54, 23);
             editMenuItem.TabIndex = 1;
@@ -166,7 +166,7 @@
             // addMenuItem
             // 
             addMenuItem.FlatStyle = FlatStyle.Flat;
-            addMenuItem.Location = new Point(690, 6);
+            addMenuItem.Location = new Point(591, 6);
             addMenuItem.Name = "addMenuItem";
             addMenuItem.Size = new Size(54, 23);
             addMenuItem.TabIndex = 1;
@@ -184,14 +184,14 @@
             menuTreeView.Location = new Point(6, 6);
             menuTreeView.Name = "menuTreeView";
             menuTreeView.ShowNodeToolTips = true;
-            menuTreeView.Size = new Size(678, 330);
+            menuTreeView.Size = new Size(577, 330);
             menuTreeView.TabIndex = 0;
             menuTreeView.ItemDrag += menuTreeView_ItemDrag;
             menuTreeView.AfterSelect += menuTreeView_AfterSelect;
             menuTreeView.DragDrop += menuTreeView_DragDrop;
             menuTreeView.DragEnter += menuTreeView_DragEnter;
             menuTreeView.DragOver += menuTreeView_DragOver;
-			menuTreeView.MouseDown += menuTreeView_MouseDown;
+            menuTreeView.MouseDown += menuTreeView_MouseDown;
             // 
             // appearTab
             // 
@@ -208,13 +208,13 @@
             appearTab.Location = new Point(4, 24);
             appearTab.Name = "appearTab";
             appearTab.Padding = new Padding(3);
-            appearTab.Size = new Size(750, 343);
+            appearTab.Size = new Size(650, 343);
             appearTab.TabIndex = 1;
             appearTab.Text = "Appearance";
             // 
             // seltextclr_btn
             // 
-            seltextclr_btn.Location = new Point(350, 205);
+            seltextclr_btn.Location = new Point(324, 225);
             seltextclr_btn.Name = "seltextclr_btn";
             seltextclr_btn.Size = new Size(75, 28);
             seltextclr_btn.TabIndex = 7;
@@ -223,7 +223,7 @@
             // seltextclr_label
             // 
             seltextclr_label.AutoSize = true;
-            seltextclr_label.Location = new Point(249, 212);
+            seltextclr_label.Location = new Point(223, 232);
             seltextclr_label.Name = "seltextclr_label";
             seltextclr_label.Size = new Size(94, 15);
             seltextclr_label.TabIndex = 6;
@@ -232,7 +232,7 @@
             // 
             // selectclr_btn
             // 
-            selectclr_btn.Location = new Point(350, 153);
+            selectclr_btn.Location = new Point(324, 173);
             selectclr_btn.Name = "selectclr_btn";
             selectclr_btn.Size = new Size(75, 28);
             selectclr_btn.TabIndex = 5;
@@ -241,7 +241,7 @@
             // selectclr_label
             // 
             selectclr_label.AutoSize = true;
-            selectclr_label.Location = new Point(273, 160);
+            selectclr_label.Location = new Point(247, 180);
             selectclr_label.Name = "selectclr_label";
             selectclr_label.Size = new Size(70, 15);
             selectclr_label.TabIndex = 4;
@@ -250,7 +250,7 @@
             // 
             // textclr_btn
             // 
-            textclr_btn.Location = new Point(350, 101);
+            textclr_btn.Location = new Point(324, 121);
             textclr_btn.Name = "textclr_btn";
             textclr_btn.Size = new Size(75, 28);
             textclr_btn.TabIndex = 3;
@@ -259,7 +259,7 @@
             // textclr_label
             // 
             textclr_label.AutoSize = true;
-            textclr_label.Location = new Point(283, 108);
+            textclr_label.Location = new Point(257, 128);
             textclr_label.Name = "textclr_label";
             textclr_label.Size = new Size(60, 15);
             textclr_label.TabIndex = 2;
@@ -268,7 +268,7 @@
             // 
             // backclr_btn
             // 
-            backclr_btn.Location = new Point(350, 51);
+            backclr_btn.Location = new Point(324, 71);
             backclr_btn.Name = "backclr_btn";
             backclr_btn.Size = new Size(75, 28);
             backclr_btn.TabIndex = 1;
@@ -277,7 +277,7 @@
             // backclr_label
             // 
             backclr_label.AutoSize = true;
-            backclr_label.Location = new Point(240, 59);
+            backclr_label.Location = new Point(214, 79);
             backclr_label.Name = "backclr_label";
             backclr_label.Size = new Size(103, 15);
             backclr_label.TabIndex = 0;
@@ -292,7 +292,7 @@
             keyTab.Controls.Add(ctrl_label);
             keyTab.Location = new Point(4, 24);
             keyTab.Name = "keyTab";
-            keyTab.Size = new Size(750, 343);
+            keyTab.Size = new Size(650, 343);
             keyTab.TabIndex = 2;
             keyTab.Text = "Keys";
             // 
@@ -304,7 +304,7 @@
             shiftAction.ForeColor = Color.White;
             shiftAction.FormattingEnabled = true;
             shiftAction.Items.AddRange(new object[] { "Run As Administrator", "Run Minimized", "Run Maximized" });
-            shiftAction.Location = new Point(281, 165);
+            shiftAction.Location = new Point(244, 168);
             shiftAction.Name = "shiftAction";
             shiftAction.Size = new Size(213, 23);
             shiftAction.TabIndex = 1;
@@ -312,7 +312,7 @@
             // shiftLabel
             // 
             shiftLabel.AutoSize = true;
-            shiftLabel.Location = new Point(238, 168);
+            shiftLabel.Location = new Point(201, 171);
             shiftLabel.Name = "shiftLabel";
             shiftLabel.Size = new Size(31, 15);
             shiftLabel.TabIndex = 0;
@@ -326,7 +326,7 @@
             ctrlAction.ForeColor = Color.White;
             ctrlAction.FormattingEnabled = true;
             ctrlAction.Items.AddRange(new object[] { "Run As Administrator", "Run Minimized", "Run Maximized" });
-            ctrlAction.Location = new Point(281, 115);
+            ctrlAction.Location = new Point(244, 118);
             ctrlAction.Name = "ctrlAction";
             ctrlAction.Size = new Size(213, 23);
             ctrlAction.TabIndex = 1;
@@ -334,7 +334,7 @@
             // ctrl_label
             // 
             ctrl_label.AutoSize = true;
-            ctrl_label.Location = new Point(238, 118);
+            ctrl_label.Location = new Point(201, 121);
             ctrl_label.Name = "ctrl_label";
             ctrl_label.Size = new Size(26, 15);
             ctrl_label.TabIndex = 0;
@@ -348,7 +348,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
             CancelButton = cancelButton;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(683, 435);
             Controls.Add(cancelButton);
             Controls.Add(okButton);
             Controls.Add(tableLayoutPanel1);
