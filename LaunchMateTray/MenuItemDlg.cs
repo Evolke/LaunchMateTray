@@ -34,6 +34,11 @@ namespace LaunchMateTray
             iconInput.Text = inputMenuItem.IconPath;
 
             menuItem = inputMenuItem;
+            Icon? icn = menuItem.GetIcon(32);
+            if (icn != null)
+            {
+                itemIcon.Image = icn.ToBitmap();
+            }
         }
 
         private void browse_Click(object sender, EventArgs e)
@@ -46,6 +51,7 @@ namespace LaunchMateTray
                 pathInput.Text = dlg.FileName;
                 nameInput.Text = Path.GetFileNameWithoutExtension(dlg.SafeFileName);
                 okButton.Enabled = true;
+                updatePictureBox();
             }
         }
 
@@ -101,6 +107,7 @@ namespace LaunchMateTray
         private void itemType_SelectedIndexChanged(object sender, EventArgs e)
         {
             ToggleTypeFields((menuItemType)itemType.SelectedIndex);
+            updatePictureBox();
         }
 
         private void MenuItemDlg_FormClosing(object sender, FormClosingEventArgs e)
@@ -128,16 +135,54 @@ namespace LaunchMateTray
         private void iconBrowseBtn_Click(object sender, EventArgs e)
         {
             var dlg = new OpenFileDialog();
-            dlg.Filter = "Applications (*.exe)|*.exe|Icons (*.ico)|*.ico|Images (*.png)|*.png";
+            dlg.Filter = "Apps/Icons/Images|*.exe;*.ico;*.png|Applications (*.exe)|*.exe|Icons (*.ico)|*.ico|Images (*.png)|*.png";
 
             if (dlg.ShowDialog(this) == DialogResult.OK)
             {
                 iconInput.Text = dlg.FileName;
+                updatePictureBox();
             }
         }
 
         private void iconInput_TextChanged(object sender, EventArgs e)
         {
+        }
+
+        private void pathInput_Leave(object sender, EventArgs e)
+        {
+            if (pathInput.Text.Length > 0) { 
+                if (!File.Exists(pathInput.Text)) {
+                    MessageBox.Show("Invalid Application Path");
+                }
+                else
+                {
+                    updatePictureBox();
+                }
+            }
+        }
+
+        private void updatePictureBox()
+        {
+            if (iconInput.Text != menuItem.IconPath 
+                || pathInput.Text != menuItem.Path 
+                || (menuItemType)itemType.SelectedIndex != menuItem.Type)
+            {
+                MenuListItem tempItem = (MenuListItem)menuItem.Clone();
+                tempItem.IconPath = iconInput.Text;
+                tempItem.Path = pathInput.Text;
+                tempItem.Type = (menuItemType)itemType.SelectedIndex;
+                Icon? icn = tempItem.GetIcon(32);
+                if (icn != null)
+                {
+                    itemIcon.Image = icn.ToBitmap();
+                }
+
+            }
+        }
+
+        private void iconInput_Leave(object sender, EventArgs e)
+        {
+            updatePictureBox();
         }
     }
 }

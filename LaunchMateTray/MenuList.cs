@@ -191,11 +191,11 @@ namespace LaunchMateTray
             }
         }
 
-        private Icon? ConvertImage2Icon(string path)
+        private Icon? ConvertImage2Icon(string path, int size = 16)
         {
             Icon? ret = null;
             Bitmap bitmap = new Bitmap(path);
-            Bitmap resizedBitmap = new Bitmap(bitmap, new Size(16, 16));
+            Bitmap resizedBitmap = new Bitmap(bitmap, new Size(size, size));
             IntPtr hIcon = resizedBitmap.GetHicon();
             ret = Icon.FromHandle(hIcon);
             return ret;
@@ -210,7 +210,7 @@ namespace LaunchMateTray
             return ret;
         }
 
-        public Icon? GetIcon()
+        public Icon? GetIcon(int size=16)
         {
             Icon? ret = null;
             string exePath = info.itemPath;
@@ -223,7 +223,7 @@ namespace LaunchMateTray
                 }
                 else if (System.IO.Path.GetExtension(info.itemIconPath).ToLower() == ".png")
                 {
-                    ret = ConvertImage2Icon(info.itemIconPath);
+                    ret = ConvertImage2Icon(info.itemIconPath, size);
                 }
                 else
                 {
@@ -239,11 +239,11 @@ namespace LaunchMateTray
                 }
                 else if (info.itemType == menuItemType.Group)
                 {
-                    ret = SystemIcons.GetStockIcon(StockIconId.Folder, 16);
+                    ret = SystemIcons.GetStockIcon(StockIconId.Folder, size);
                 }
                 else
                 {
-                    ret = SystemIcons.GetStockIcon(StockIconId.Error, 16);
+                    ret = SystemIcons.GetStockIcon(StockIconId.Help, size);
                 }
             }
 
