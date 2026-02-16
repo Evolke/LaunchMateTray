@@ -45,6 +45,10 @@ namespace LaunchMateTray
         {
             var dlg = new OpenFileDialog();
             dlg.Filter = "Applications (*.exe)|*.exe";
+            if (pathInput.Text.Length > 0)
+            {
+                dlg.InitialDirectory = Path.GetDirectoryName(pathInput.Text);
+            }
 
             if (dlg.ShowDialog(this) == DialogResult.OK)
             {
@@ -136,6 +140,11 @@ namespace LaunchMateTray
         {
             var dlg = new OpenFileDialog();
             dlg.Filter = "Apps/Icons/Images|*.exe;*.ico;*.png|Applications (*.exe)|*.exe|Icons (*.ico)|*.ico|Images (*.png)|*.png";
+
+            if (iconInput.Text.Length > 0)
+            {
+                dlg.InitialDirectory = Path.GetDirectoryName(iconInput.Text);
+            }
 
             if (dlg.ShowDialog(this) == DialogResult.OK)
             {

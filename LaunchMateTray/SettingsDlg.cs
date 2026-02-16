@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using Shell32;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LaunchMateTray
@@ -51,7 +52,7 @@ namespace LaunchMateTray
             {
                 foreach (var item in children)
                 {
-                    AddTreeItem(item, menuTreeView.Nodes);
+                    AddTreeItem(item, menuTreeView.Nodes,true);
                 }
 
             }
@@ -178,7 +179,7 @@ namespace LaunchMateTray
         }
         public void DeleteItemHandler(object? sender, EventArgs e)
         {
-            var selNode = menuTreeView.SelectedNode;
+            TreeNode? selNode = menuTreeView.SelectedNode;
             if (selNode != null)
             {
                 if (MessageBox.Show(this, "Are you sure you want to delete the selected item?", "Delete?", MessageBoxButtons.OKCancel) == DialogResult.OK)
@@ -192,7 +193,8 @@ namespace LaunchMateTray
                         {
                             parent.RemoveChild(item);
                             menuList?.BuildDictionary();
-                            selNode.Parent?.Nodes.Remove(selNode);
+                            TreeNodeCollection nodes = selNode.Parent != null ? selNode.Parent.Nodes : menuTreeView.Nodes;
+                            nodes.Remove(selNode);
                         }
                     }
                 }
@@ -222,14 +224,17 @@ namespace LaunchMateTray
             deleteItemBtn.Enabled = selected;
         }
 
-        private TreeNode? AddTreeItem(MenuListItem item, TreeNodeCollection nodes)
+        private TreeNode? AddTreeItem(MenuListItem item, TreeNodeCollection nodes, bool silent=false)
         {
             TreeNode? ret = null;
 
             switch (item.Type)
             {
                 case menuItemType.Application:
-                    if (!File.Exists(item.Path)) { MessageBox.Show("Invalid Path"); return null; }
+                    if (!System.IO.File.Exists(item.Path)) {
+                        if (!silent) { MessageBox.Show("Invalid Path"); } 
+                        //return null; 
+                    }
                     Icon icon = item.GetIcon() ?? SystemIcons.GetStockIcon(StockIconId.Error, 16);
                     menuTreeView?.ImageList?.Images.Add(item.Id, icon);
                     ret = nodes.Add(item.Id, item.Name, item.Id, item.Id);
@@ -243,7 +248,7 @@ namespace LaunchMateTray
                     {
                         foreach (var child in children)
                         {
-                            AddTreeItem(child, ret.Nodes);
+                            AddTreeItem(child, ret.Nodes, silent);
                         }
                     }
                     break;
@@ -266,6 +271,61 @@ namespace LaunchMateTray
             // call the ContainsNode method recursively using the parent of   
             // the second node.  
             return ContainsNode(dragNode, targetNode.Parent);
+        }
+            
+        private string getLinkTargetPath(string linkPath)
+        {
+            string ret = "";
+
+            try
+            {
+                string? dir = Path.GetDirectoryName(linkPath);
+                string filename = System.IO.Path.GetFileName(linkPath);
+
+                Shell shell = new Shell();
+                Folder folder = shell.NameSpace(dir);
+                FolderItem folderItem = folder.ParseName(filename);
+                if (folderItem != null)
+                {
+                    Shell32.ShellLinkObject link = (Shell32.ShellLinkObject)folderItem.GetLink;
+                    ret = link.Path;
+                }
+
+            } 
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            return ret;
+        }
+
+        private void HandleDropFile(string file)
+        {
+            string appPath = "";
+
+            if (Path.GetExtension(file).ToLower() == ".exe")
+            {
+                appPath = file;
+            }
+            else if (Path.GetExtension(file).ToLower() == ".lnk")
+            {
+                string targetPath = getLinkTargetPath(file);
+                if (Path.GetExtension(targetPath).ToLower() == ".exe")
+                {
+                    appPath = targetPath;
+                }
+            }
+
+            if (appPath.Length > 0)
+            {
+                MenuListItem item = new MenuListItem();
+                item.Path = appPath;
+                item.Name = Path.GetFileNameWithoutExtension(appPath);
+                AddTreeItem(item, menuTreeView.Nodes);
+                menuList?.Root.AddChild(item);
+                menuList?.BuildDictionaryItem(item);
+            }
         }
 
         private void menuTreeView_ItemDrag(object sender, ItemDragEventArgs e)
@@ -358,23 +418,13 @@ namespace LaunchMateTray
                 {
                     foreach (string file in files)
                     {
-                        if (Path.GetExtension(file).ToLower() == ".exe")
-                        {
-                            MenuListItem item = new MenuListItem();
-                            item.Path = file;
-                            item.Name = Path.GetFileNameWithoutExtension(file);
-                            AddTreeItem(item, menuTreeView.Nodes);
-                            menuList?.Root.AddChild(item);
-                            menuList?.BuildDictionaryItem(item);
-                        }
+                        HandleDropFile(file);
                     }
                 }
             }
 
-
-
-
         }
+
 
         private void sortBtn_Click(object sender, EventArgs e)
         {
