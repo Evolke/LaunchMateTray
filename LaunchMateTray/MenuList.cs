@@ -19,6 +19,7 @@ namespace LaunchMateTray
         public string itemPath;
         public string itemArgs;
         public string itemIconPath;
+        public int launchOption;
         public uint order;
     };
 
@@ -69,6 +70,7 @@ namespace LaunchMateTray
                     this.Type = menuItemType.Application;
                     info.itemPath = appItem.Path ?? "";
                     info.itemArgs = appItem.Arguments ?? "";
+                    info.launchOption = appItem.LaunchOption;
                     break;
             }
         }
@@ -191,6 +193,18 @@ namespace LaunchMateTray
             }
         }
 
+        public int LaunchOption
+        {
+            get
+            {
+                return info.launchOption;
+            }
+            set
+            {
+                info.launchOption = value;
+            }
+        }
+
         private Icon? ConvertImage2Icon(string path, int size = 16)
         {
             Icon? ret = null;
@@ -296,6 +310,7 @@ namespace LaunchMateTray
                     ret.Path = info.itemPath;
                     ret.Arguments = info.itemArgs;
                     ret.IconPath = info.itemIconPath;
+                    ret.LaunchOption = info.launchOption;
                     break;
 
                 case menuItemType.Group:

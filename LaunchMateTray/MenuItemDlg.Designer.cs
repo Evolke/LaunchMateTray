@@ -44,6 +44,8 @@
             iconBrowseBtn = new Button();
             itemIcon = new PictureBox();
             layout = new TableLayoutPanel();
+            launchOptionLabel = new Label();
+            launchOption = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)itemIcon).BeginInit();
             layout.SuspendLayout();
             SuspendLayout();
@@ -52,9 +54,9 @@
             // 
             cancelButton.DialogResult = DialogResult.Cancel;
             cancelButton.FlatStyle = FlatStyle.Flat;
-            cancelButton.Location = new Point(360, 197);
+            cancelButton.Location = new Point(347, 221);
             cancelButton.Name = "cancelButton";
-            cancelButton.Size = new Size(75, 34);
+            cancelButton.Size = new Size(75, 23);
             cancelButton.TabIndex = 1;
             cancelButton.Text = "&Cancel";
             cancelButton.UseVisualStyleBackColor = true;
@@ -64,9 +66,9 @@
             okButton.DialogResult = DialogResult.OK;
             okButton.Enabled = false;
             okButton.FlatStyle = FlatStyle.Flat;
-            okButton.Location = new Point(296, 197);
+            okButton.Location = new Point(261, 221);
             okButton.Name = "okButton";
-            okButton.Size = new Size(47, 34);
+            okButton.Size = new Size(75, 23);
             okButton.TabIndex = 7;
             okButton.Text = "&OK";
             okButton.UseVisualStyleBackColor = true;
@@ -76,9 +78,9 @@
             // 
             label1.Anchor = AnchorStyles.Right;
             label1.AutoSize = true;
-            label1.Location = new Point(48, 10);
+            label1.Location = new Point(60, 13);
             label1.Name = "label1";
-            label1.Size = new Size(40, 20);
+            label1.Size = new Size(32, 15);
             label1.TabIndex = 3;
             label1.Text = "Type";
             label1.TextAlign = ContentAlignment.MiddleRight;
@@ -92,9 +94,9 @@
             itemType.ForeColor = Color.White;
             itemType.FormattingEnabled = true;
             itemType.Items.AddRange(new object[] { "Application", "Group" });
-            itemType.Location = new Point(108, 6);
+            itemType.Location = new Point(111, 9);
             itemType.Name = "itemType";
-            itemType.Size = new Size(121, 28);
+            itemType.Size = new Size(121, 23);
             itemType.TabIndex = 1;
             itemType.SelectedIndexChanged += itemType_SelectedIndexChanged;
             // 
@@ -104,9 +106,9 @@
             pathInput.BackColor = Color.Black;
             pathInput.BorderStyle = BorderStyle.FixedSingle;
             pathInput.ForeColor = Color.White;
-            pathInput.Location = new Point(108, 77);
+            pathInput.Location = new Point(111, 73);
             pathInput.Name = "pathInput";
-            pathInput.Size = new Size(265, 27);
+            pathInput.Size = new Size(249, 23);
             pathInput.TabIndex = 3;
             pathInput.TextChanged += pathInput_TextChanged;
             pathInput.Leave += pathInput_Leave;
@@ -114,7 +116,7 @@
             // browse
             // 
             browse.FlatStyle = FlatStyle.Flat;
-            browse.Location = new Point(379, 77);
+            browse.Location = new Point(366, 73);
             browse.Name = "browse";
             browse.Size = new Size(39, 23);
             browse.TabIndex = 4;
@@ -128,9 +130,9 @@
             nameInput.BackColor = Color.Black;
             nameInput.BorderStyle = BorderStyle.FixedSingle;
             nameInput.ForeColor = Color.White;
-            nameInput.Location = new Point(108, 44);
+            nameInput.Location = new Point(111, 44);
             nameInput.Name = "nameInput";
-            nameInput.Size = new Size(265, 27);
+            nameInput.Size = new Size(249, 23);
             nameInput.TabIndex = 2;
             nameInput.TextChanged += nameInput_TextChanged;
             // 
@@ -138,9 +140,9 @@
             // 
             label2.Anchor = AnchorStyles.Right;
             label2.AutoSize = true;
-            label2.Location = new Point(33, 47);
+            label2.Location = new Point(48, 48);
             label2.Name = "label2";
-            label2.Size = new Size(55, 20);
+            label2.Size = new Size(44, 15);
             label2.TabIndex = 3;
             label2.Text = "Name*";
             label2.TextAlign = ContentAlignment.TopRight;
@@ -149,9 +151,9 @@
             // 
             pathLabel.Anchor = AnchorStyles.Right;
             pathLabel.AutoSize = true;
-            pathLabel.Location = new Point(45, 80);
+            pathLabel.Location = new Point(56, 77);
             pathLabel.Name = "pathLabel";
-            pathLabel.Size = new Size(43, 20);
+            pathLabel.Size = new Size(36, 15);
             pathLabel.TabIndex = 3;
             pathLabel.Text = "Path*";
             pathLabel.TextAlign = ContentAlignment.TopRight;
@@ -160,9 +162,9 @@
             // 
             argsLabel.Anchor = AnchorStyles.Right;
             argsLabel.AutoSize = true;
-            argsLabel.Location = new Point(7, 113);
+            argsLabel.Location = new Point(26, 106);
             argsLabel.Name = "argsLabel";
-            argsLabel.Size = new Size(81, 20);
+            argsLabel.Size = new Size(66, 15);
             argsLabel.TabIndex = 3;
             argsLabel.Text = "Arguments";
             // 
@@ -172,18 +174,18 @@
             argsInput.BackColor = Color.Black;
             argsInput.BorderStyle = BorderStyle.FixedSingle;
             argsInput.ForeColor = Color.White;
-            argsInput.Location = new Point(108, 110);
+            argsInput.Location = new Point(111, 102);
             argsInput.Name = "argsInput";
-            argsInput.Size = new Size(265, 27);
+            argsInput.Size = new Size(249, 23);
             argsInput.TabIndex = 5;
             // 
             // label3
             // 
             label3.Anchor = AnchorStyles.Right;
             label3.AutoSize = true;
-            label3.Location = new Point(51, 151);
+            label3.Location = new Point(62, 135);
             label3.Name = "label3";
-            label3.Size = new Size(37, 20);
+            label3.Size = new Size(30, 15);
             label3.TabIndex = 3;
             label3.Text = "Icon";
             // 
@@ -193,9 +195,9 @@
             iconInput.BackColor = Color.Black;
             iconInput.BorderStyle = BorderStyle.FixedSingle;
             iconInput.ForeColor = Color.White;
-            iconInput.Location = new Point(108, 147);
+            iconInput.Location = new Point(111, 131);
             iconInput.Name = "iconInput";
-            iconInput.Size = new Size(265, 27);
+            iconInput.Size = new Size(249, 23);
             iconInput.TabIndex = 5;
             iconInput.TextChanged += iconInput_TextChanged;
             iconInput.Leave += iconInput_Leave;
@@ -204,7 +206,7 @@
             // 
             iconBrowseBtn.Anchor = AnchorStyles.Left;
             iconBrowseBtn.FlatStyle = FlatStyle.Flat;
-            iconBrowseBtn.Location = new Point(379, 149);
+            iconBrowseBtn.Location = new Point(366, 131);
             iconBrowseBtn.Name = "iconBrowseBtn";
             iconBrowseBtn.Size = new Size(39, 23);
             iconBrowseBtn.TabIndex = 4;
@@ -216,7 +218,7 @@
             // 
             itemIcon.Anchor = AnchorStyles.Left;
             itemIcon.BorderStyle = BorderStyle.FixedSingle;
-            itemIcon.Location = new Point(379, 3);
+            itemIcon.Location = new Point(366, 3);
             itemIcon.Name = "itemIcon";
             itemIcon.Size = new Size(34, 34);
             itemIcon.TabIndex = 8;
@@ -225,7 +227,7 @@
             // layout
             // 
             layout.ColumnCount = 5;
-            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 91F));
+            layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 95F));
             layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 5.102041F));
             layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 94.89796F));
             layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 53F));
@@ -243,22 +245,49 @@
             layout.Controls.Add(label1, 0, 0);
             layout.Controls.Add(pathLabel, 0, 2);
             layout.Controls.Add(itemType, 2, 0);
+            layout.Controls.Add(launchOptionLabel, 0, 5);
+            layout.Controls.Add(launchOption, 2, 5);
             layout.Location = new Point(8, 9);
             layout.Name = "layout";
-            layout.RowCount = 5;
+            layout.RowCount = 6;
             layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 41F));
             layout.RowStyles.Add(new RowStyle());
             layout.RowStyles.Add(new RowStyle());
             layout.RowStyles.Add(new RowStyle());
             layout.RowStyles.Add(new RowStyle());
-            layout.Size = new Size(440, 182);
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            layout.Size = new Size(427, 195);
             layout.TabIndex = 9;
+            // 
+            // launchOptionLabel
+            // 
+            launchOptionLabel.Anchor = AnchorStyles.Right;
+            launchOptionLabel.AutoSize = true;
+            launchOptionLabel.Location = new Point(6, 168);
+            launchOptionLabel.Name = "launchOptionLabel";
+            launchOptionLabel.Size = new Size(86, 15);
+            launchOptionLabel.TabIndex = 3;
+            launchOptionLabel.Text = "Launch Option";
+            launchOptionLabel.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // launchOption
+            // 
+            launchOption.BackColor = Color.Black;
+            launchOption.DropDownStyle = ComboBoxStyle.DropDownList;
+            launchOption.FlatStyle = FlatStyle.Flat;
+            launchOption.ForeColor = Color.White;
+            launchOption.FormattingEnabled = true;
+            launchOption.Items.AddRange(new object[] { "None", "Run As Administrator", "Run Minimized", "Run Maximized" });
+            launchOption.Location = new Point(111, 160);
+            launchOption.Name = "launchOption";
+            launchOption.Size = new Size(249, 23);
+            launchOption.TabIndex = 9;
             // 
             // MenuItemDlg
             // 
             AutoScaleMode = AutoScaleMode.None;
             BackColor = Color.Black;
-            ClientSize = new Size(441, 243);
+            ClientSize = new Size(438, 258);
             ControlBox = false;
             Controls.Add(layout);
             Controls.Add(cancelButton);
@@ -296,5 +325,7 @@
         private Button iconBrowseBtn;
         private PictureBox itemIcon;
         private TableLayoutPanel layout;
+        private Label launchOptionLabel;
+        private ComboBox launchOption;
     }
 }

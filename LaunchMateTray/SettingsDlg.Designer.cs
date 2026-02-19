@@ -303,7 +303,7 @@
             shiftAction.FlatStyle = FlatStyle.Flat;
             shiftAction.ForeColor = Color.White;
             shiftAction.FormattingEnabled = true;
-            shiftAction.Items.AddRange(new object[] { "Run As Administrator", "Run Minimized", "Run Maximized" });
+            shiftAction.Items.AddRange(new object[] { "None", "Run As Administrator", "Run Minimized", "Run Maximized" });
             shiftAction.Location = new Point(244, 168);
             shiftAction.Name = "shiftAction";
             shiftAction.Size = new Size(213, 23);
@@ -325,7 +325,7 @@
             ctrlAction.FlatStyle = FlatStyle.Flat;
             ctrlAction.ForeColor = Color.White;
             ctrlAction.FormattingEnabled = true;
-            ctrlAction.Items.AddRange(new object[] { "Run As Administrator", "Run Minimized", "Run Maximized" });
+            ctrlAction.Items.AddRange(new object[] { "None", "Run As Administrator", "Run Minimized", "Run Maximized" });
             ctrlAction.Location = new Point(244, 118);
             ctrlAction.Name = "ctrlAction";
             ctrlAction.Size = new Size(213, 23);
