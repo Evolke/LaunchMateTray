@@ -3,7 +3,7 @@
 ; Non-commercial use only
 
 #define MyAppName "LaunchMateTray"
-#define MyAppVersion "0.0.5"
+#define MyAppVersion "0.0.6"
 #define MyAppPublisher "Evolke"
 #define MyAppURL "https://github.com/Evolke/LaunchMateTray"
 #define MyAppExeName "LaunchMateTray.exe"
