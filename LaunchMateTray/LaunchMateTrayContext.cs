@@ -9,7 +9,7 @@ using Microsoft.VisualBasic.Devices;
 
 namespace LaunchMateTray
 {
-    public enum ProcessActionType { RunAsAdmin = 0, Minimized = 1, Maximized = 2 };
+    public enum ProcessActionType { None = 0, RunAsAdmin = 1, Minimized = 2, Maximized = 3 };
 
     public partial class LaunchMateTrayContext: ApplicationContext
     {
@@ -116,6 +116,10 @@ namespace LaunchMateTray
                     else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
                     {
                         psInfo = FillProcessAction((ProcessActionType)settings.Settings.Keys["shift"], psInfo);
+                    }
+                    else if (menuItem.LaunchOption > 0)
+                    {
+                        psInfo = FillProcessAction((ProcessActionType)menuItem.LaunchOption, psInfo);
                     }
                     Process.Start(psInfo);
                 }

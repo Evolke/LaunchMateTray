@@ -30,6 +30,7 @@ namespace LaunchMateTray
         public String? Path { get; set; }
         public String? Arguments {  get; set; }
         public String? IconPath { get; set; }
+        public int LaunchOption { get; set; }
 
         public List<JsonAppItem>? Children { get; set; }
     }

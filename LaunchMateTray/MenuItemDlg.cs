@@ -32,6 +32,7 @@ namespace LaunchMateTray
             pathInput.Text = inputMenuItem.Path;
             argsInput.Text = inputMenuItem.Arguments;
             iconInput.Text = inputMenuItem.IconPath;
+            launchOption.SelectedIndex = inputMenuItem.LaunchOption;
 
             menuItem = inputMenuItem;
             Icon? icn = menuItem.GetIcon(32);
@@ -66,6 +67,7 @@ namespace LaunchMateTray
             menuItem.Path = pathInput.Text;
             menuItem.Arguments = argsInput.Text;
             menuItem.IconPath = iconInput.Text;
+            menuItem.LaunchOption = launchOption.SelectedIndex;
         }
 
         private void ToggleTypeFields(menuItemType type)
@@ -87,6 +89,8 @@ namespace LaunchMateTray
             browse.Visible = show;
             argsLabel.Visible = show;
             argsInput.Visible = show;
+            launchOptionLabel.Visible = show;
+            launchOption.Visible = show;
 
             enableOKBtn();
 
