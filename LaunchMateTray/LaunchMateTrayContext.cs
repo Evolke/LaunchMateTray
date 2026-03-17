@@ -37,6 +37,7 @@ namespace LaunchMateTray
             trayIcon.Icon = new Icon(new System.IO.MemoryStream(Properties.Resources.LaunchMateTrayIcon));
             trayIcon.Visible = true;
             trayIcon.ContextMenuStrip = menu;
+            trayIcon.Text = "LaunchMateTray";
       
         }
 
